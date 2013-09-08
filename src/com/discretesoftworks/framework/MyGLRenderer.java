@@ -194,7 +194,8 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
 
         // this projection matrix is applied to object coordinates
         // in the onDrawFrame() method
-        Matrix.frustumM(mProjMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
+        //Matrix.frustumM(mProjMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
+		Matrix.orthoM(mProjMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
     }
     
     public static int loadShader(int type, String shaderCode){
