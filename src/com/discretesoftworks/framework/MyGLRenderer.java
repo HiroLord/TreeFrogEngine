@@ -139,7 +139,6 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
 		
 		if (deltaTime > 5.15){
 			deltaTime = (float)5.15;
-			Log.i("Slowdown.",""+deltaTime);
 		}
     	
 		getGame().getController().update(deltaTime);
@@ -153,7 +152,7 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
 
         // Set the camera position (View matrix)
         Matrix.setLookAtM(mVMatrix, 0,
-        		0.0f, 0.0f, 7.0f,		// Eye
+        		0.0f, -10.0f, 7.0f,		// Eye
         		0.0f, 0.0f, 0.0f,	// Center
         		0.0f, 1.0f, 0.0f);	// Up
    
@@ -178,8 +177,6 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
 
     @Override
     public void onSurfaceChanged(GL10 unused, int width, int height) {
-        // Adjust the viewport based on geometry changes,
-        // such as screen rotation
     	int w = (int)(width/scale);
     	int h = (int)(height/scale);
         GLES20.glViewport(0, 0, w, h);
