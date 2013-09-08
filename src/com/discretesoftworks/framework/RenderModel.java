@@ -241,42 +241,6 @@ public class RenderModel extends GriddedObject{
     public float getZ(){
     	return 0f;
     }
-
-    public float[] getCoords(int cX, int cY){
-    	float x = getX();
-    	float y = getY();
-    	if (getHudElement()){
-    		x = (x * GameRenderer.s_instance.getViewScale());
-        	y = (y * GameRenderer.s_instance.getViewScale());
-    		x = cX - (GameRenderer.s_instance.getViewWidth() /2.0f) + x;
-    		y = cY - (GameRenderer.s_instance.getViewHeight()/2.0f) + y;
-    	}
-
-    	topLeft.x = ( x-cX)/(GameRenderer.s_instance.getScreenHeight()/2.0f);
-    	topLeft.y = (-y+cY)/(GameRenderer.s_instance.getScreenHeight()/2.0f);
-    	float h = GameRenderer.s_instance.getScreenHeight();
-    	float wScale = 2*(getWidth()/(h));
-    	float hScale = 2*(getHeight()/(h));
-    	if (getHudElement()){
-    		wScale *= GameRenderer.s_instance.getViewScale();
-    		hScale *= GameRenderer.s_instance.getViewScale();
-    	}
-    	wScale /= 2;
-		hScale /= 2;
-    	squareCoords[0] = (float)(topLeft.x-wScale);
-    	squareCoords[1] = (float)(topLeft.y+hScale);
-    	squareCoords[2] = getZ();
-    	squareCoords[3] = (float)(topLeft.x-wScale);
-    	squareCoords[4] = (float)(topLeft.y-hScale);
-    	squareCoords[5] = getZ();
-    	squareCoords[6] = (float)(topLeft.x+wScale);
-    	squareCoords[7] = (float)(topLeft.y-hScale);
-    	squareCoords[8] = getZ();
-    	squareCoords[9] = (float)(topLeft.x+wScale);
-    	squareCoords[10] = (float)(topLeft.y+hScale);
-    	squareCoords[11] = getZ();
-    	return squareCoords;
-    }
     
     public void increment(){
     	imageSingle += imageSpeed;

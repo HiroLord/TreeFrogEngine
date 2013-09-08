@@ -90,7 +90,6 @@ public class Player extends MovingObject{
 		if (placeFree(getX(), getY() + MovingObject.gravity)){
 			changedy(MovingObject.gravity);
 		} else if (jump) {
-			System.out.println("Jump!");
 			setdy(.1f);
 		}
 		
