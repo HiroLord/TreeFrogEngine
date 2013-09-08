@@ -7,7 +7,7 @@ import android.graphics.BitmapFactory;
 public class Sprite extends GriddedObject{
 	
 	private int[] frames;
-	private int maskWidth, maskHeight;
+	private float maskWidth, maskHeight;
 	
 	public Sprite(Bitmap source, int frames){
 		super(0,0,2,2);
@@ -29,8 +29,8 @@ public class Sprite extends GriddedObject{
         this.frames = new int[frames];
         this.maskWidth = source.getHeight();
         this.maskHeight = source.getWidth()/frames;
-        int width = maskWidth;
-        int height = maskHeight;
+        int width = (int)maskWidth;
+        int height = (int)maskHeight;
         for (int i = 0; i < bitmaps.length; i++){
         	bitmaps[i] = Bitmap.createBitmap(source,i*width,0,width,height);
         	this.frames[i] = MyGLRenderer.loadTexture(bitmaps[i]); // May need to call s_instance
@@ -53,15 +53,15 @@ public class Sprite extends GriddedObject{
 		return frames.length;
 	}
 	
-	public int getMaskWidth(){
+	public float getMaskWidth(){
 		return maskWidth;
 	}
 	
-	public int getMaskHeight(){
+	public float getMaskHeight(){
 		return maskHeight;
 	}
 	
-	public void setMask(int width, int height){
+	public void setMask(float width, float height){
 		this.maskWidth = width;
 		this.maskHeight = height;
 	}

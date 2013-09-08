@@ -13,9 +13,10 @@ public class TestController extends OuyaGameController{
 	}
 	
 	public void init(){
-		new Player(128,128,512,512);
-		Floor f = new Floor(0,0,1024,64);
-		f.setCorner(16, 512);
+		new Player(0, 2f, 1f, 1f);
+		new Floor(0, 0f, 1, 1);
+		new Floor(-1f, 0f, 1, 1);
+		new Floor(1f, 0f, 1, 1);
 		super.init();
 	}
 	

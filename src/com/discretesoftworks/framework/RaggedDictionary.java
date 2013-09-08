@@ -70,9 +70,6 @@ public class RaggedDictionary<T,E>{
 			for (E e : data[i].b)
 				compiledData.add(e);
 		}
-		System.out.println("Here is the data: ");
-		for (E e : compiledData)
-			System.out.println(e);
 	}
 	
 	public ArrayList<E> getCompiledData(){

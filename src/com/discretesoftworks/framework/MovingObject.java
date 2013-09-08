@@ -4,9 +4,9 @@ public class MovingObject extends GameObject{
 	
 	private float dx, dy;
 	
-	public static float gravity = 0.45f;
+	public static float gravity = -0.005f;
 	
-	public MovingObject(int x, int y, int width, int height, Sprite sprite){
+	public MovingObject(float x, float y, float width, float height, Sprite sprite){
 		super(x,y,width,height,sprite);
 	}
 	
@@ -16,18 +16,18 @@ public class MovingObject extends GameObject{
 	}
 	
 	public void moveCheckCollisions(){
-		changeX(getdx());
-		int moveX = getdx() > 0 ? -1 : 1;
-		while (Directional.checkAllCollisions(this, GameRenderer.s_instance.solidObjects) != null){
-			changeX(moveX);
-			setdx(0);
-		}
-		
 		changeY(getdy());
-		int moveY = getdy() > 0 ? -1 : 1;
+		float moveY = getdy() > 0 ? gravity : -gravity;
 		while (Directional.checkAllCollisions(this, GameRenderer.s_instance.solidObjects) != null){
 			changeY(moveY);
 			setdy(0);
+		}
+		
+		changeX(getdx());
+		float moveX = getdx() > 0 ? gravity : -gravity;
+		while (Directional.checkAllCollisions(this, GameRenderer.s_instance.solidObjects) != null){
+			changeX(moveX);
+			setdx(0);
 		}
 	}
 	

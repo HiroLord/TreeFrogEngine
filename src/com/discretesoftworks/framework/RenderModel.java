@@ -7,6 +7,7 @@ import java.nio.ShortBuffer;
 
 import android.graphics.PointF;
 import android.opengl.GLES20;
+import android.opengl.Matrix;
 
 
 
@@ -61,6 +62,7 @@ public class RenderModel extends GriddedObject{
 
     static final int COORDS_PER_VERTEX = 3;
     private PointF topLeft = new PointF(0,0);
+    private float[] mModelMatrix = new float[16];
     private float squareCoords[] = { -0.5f,  0.5f, 0f,
             						 -0.5f, -0.5f, 0f,
             						  0.5f, -0.5f, 0f,
@@ -77,6 +79,9 @@ public class RenderModel extends GriddedObject{
 
     // Set color with red, green, blue and alpha (opacity) values
     float color[] = { .75f, .75f, .75f, 1.0f };
+    
+    float translation[] = {0, 0, 0};
+    float scale[] = {1, 1, 1};
     
     private Sprite mySprite;
     private float imageSingle;
@@ -148,7 +153,15 @@ public class RenderModel extends GriddedObject{
         GameRenderer.s_instance.setSurfaceCreated(true);
     }
     
-    public void set(int x, int y, int width, int height, Sprite mySprite){
+    public void remakeModelMatrix(){
+    	Matrix.setIdentityM(mModelMatrix, 0);
+    	//Matrix.scaleM(mModelMatrix, 0, scale[0], scale[1], scale[2]);
+    	mModelMatrix[3]  = getX();
+    	mModelMatrix[7]  = getY();
+    	mModelMatrix[11] = 0f;
+    }
+    
+    public void set(float x, float y, float width, float height, Sprite mySprite){
     	setCoordinates(x,y);
     	setDimensions(width,height);
     	this.mySprite = mySprite;
@@ -282,16 +295,15 @@ public class RenderModel extends GriddedObject{
     	imageSpeed = speed;
     }
     
-    public void draw(float[] mvpMatrix, int centerX, int centerY, float centerZ) {
-    	int width = GameRenderer.s_instance.getScreenWidth()/2;
-    	int height = GameRenderer.s_instance.getScreenHeight()/2;
-    	if (set && getVisible() && (getHudElement() || (getRight() >= centerX-width*centerZ/3 && getLeft() <= centerX + width*centerZ/3 && getBottom() >= centerY-height*centerZ/3 && getTop() <= centerY+height*centerZ/3))){
+    public void draw(float[] vpMatrix, float centerX, float centerY, float centerZ) {
+    	//int width = GameRenderer.s_instance.getScreenWidth()/2;
+    	//int height = GameRenderer.s_instance.getScreenHeight()/2;
+    	if (set && getVisible() && (getHudElement() || true/* (getRight() >= centerX-width*centerZ/3 && getLeft() <= centerX + width*centerZ/3 && getBottom() >= centerY-height*centerZ/3 && getTop() <= centerY+height*centerZ/3)*/)){
     		increment();
             mTextureDataHandle = mySprite.getSprite(getImageSingle());
             
+            remakeModelMatrix();
     		
-    		getCoords(centerX, centerY);
-	    	setSize(squareCoords);
 	    	
 	        // Add program to OpenGL environment
 	        GLES20.glUseProgram(mProgram);
@@ -314,7 +326,7 @@ public class RenderModel extends GriddedObject{
 	        GLES20.glUniform4fv(mColorHandle, 1, color, 0);
 	        
 	        /* */
-	      //Set Texture Handles and bind Texture
+	        //Set Texture Handles and bind Texture
 	        mTextureUniformHandle = GLES20.glGetAttribLocation(mProgram, "u_Texture");
 	        mTextureCoordinateHandle = GLES20.glGetAttribLocation(mProgram, "a_TexCoordinate");
 
@@ -341,6 +353,10 @@ public class RenderModel extends GriddedObject{
 	        mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
 	        MyGLRenderer.checkGlError("glGetUniformLocation");
 	
+	        float[] mvpMatrix = new float[16];
+	        
+	        Matrix.multiplyMM(mvpMatrix, 0, mModelMatrix, 0, vpMatrix, 0);
+	        
 	        // Apply the projection and view transformation
 	        GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
 	        MyGLRenderer.checkGlError("glUniformMatrix4fv");

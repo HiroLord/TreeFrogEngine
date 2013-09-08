@@ -3,7 +3,7 @@ package com.discretesoftworks.framework;
 
 public class View extends GriddedObject{
 	
-	private int newX, newY;
+	private float newX, newY;
 	
 	private static final float baseZ = 3f;
 	private float speed;
@@ -22,19 +22,19 @@ public class View extends GriddedObject{
 		return getZ()/baseZ;
 	}
 	
-	public void setNewX(int newX){
+	public void setNewX(float newX){
 		this.newX = newX;
 	}
 	
-	public void setNewY(int newY){
+	public void setNewY(float newY){
 		this.newY = newY;
 	}
 	
-	public int getNewX(){
+	public float getNewX(){
 		return newX;
 	}
 	
-	public int getNewY(){
+	public float getNewY(){
 		return newY;
 	}
 	
@@ -47,13 +47,13 @@ public class View extends GriddedObject{
 	}
 	
 	@Override
-	public void setX(int x){
+	public void setX(float x){
 		super.setX(x);
 		setNewX(x);
 	}
 	
 	@Override
-	public void setY(int y){
+	public void setY(float y){
 		super.setY(y);
 		setNewY(y);
 	}

@@ -1,5 +1,7 @@
 package com.discretesoftworks.TestGame;
 
+import java.util.Random;
+
 import tv.ouya.console.api.OuyaController;
 
 import com.discretesoftworks.OUYAframework.OuyaGameController;
@@ -12,19 +14,27 @@ public class Player extends MovingObject{
 
 	private boolean left, right, jump;
 	
+	private boolean click;
+	
 	private float acceleration, maxSpeed;
 	
 	private int pNum;
 	
-	public Player(int x, int y, int width, int height) {
+	private Random rand;
+	
+	public Player(float x, float y, float width, float height) {
 		super(x, y, width, height, Assets.sprGlass);
 		left = false;
 		right = false;
 		jump = false;
 		pNum = 0;
 		
-		acceleration = 0.5f;
-		maxSpeed = 6f;
+		rand = new Random();
+		
+		click = false;
+		
+		acceleration = 0.005f;
+		maxSpeed = .06f;
 	}
 
 	private void grabControllerInfo(OuyaController c){
@@ -34,6 +44,18 @@ public class Player extends MovingObject{
 		
 		if (c.getButton(OuyaController.BUTTON_O))
 			jump = true;
+		
+		if (c.getButton(OuyaController.BUTTON_Y)){
+			if (!click){
+				click = true;
+				System.out.println(GameRenderer.s_instance.renderObjects.getCompiledData().size());
+			}
+		} else
+			click = false;
+		
+		if (c.getButton(OuyaController.BUTTON_A)){
+			new Floor((rand.nextFloat()*6)-3f, (rand.nextFloat())-0.5f, 1, 1);
+		}
 		
 		if (!OuyaGameController.stickInDeadzone(c, 1)){
 			float xMag = OuyaGameController.getStickValues(c, 1).x;
@@ -65,10 +87,11 @@ public class Player extends MovingObject{
 		else if (getdx() < -maxSpeed)
 			setdx(-maxSpeed);
 		
-		if (placeFree(getX(),getY()+1)){
+		if (placeFree(getX(), getY() + MovingObject.gravity)){
 			changedy(MovingObject.gravity);
 		} else if (jump) {
-			setdy(-11f);
+			System.out.println("Jump!");
+			setdy(.1f);
 		}
 		
 		moveCheckCollisions();
@@ -76,9 +99,9 @@ public class Player extends MovingObject{
 		super.update(deltaTime);
 	}
 	
-	private boolean placeFree(int x, int y){
-		int dx = x-getX();
-		int dy = y-getY();
+	private boolean placeFree(float x, float y){
+		float dx = x-getX();
+		float dy = y-getY();
 		changeX(dx);
 		changeY(dy);
 		

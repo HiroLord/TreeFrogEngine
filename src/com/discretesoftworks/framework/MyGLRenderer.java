@@ -21,13 +21,13 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
 	
 	private static Context context;
 	
-	private final float[] mMVPMatrix = new float[16];
+	private final float[] mVPMatrix = new float[16];
     private final float[] mProjMatrix = new float[16];
     private final float[] mVMatrix = new float[16];
     //private final float[] mRotationMatrix = new float[16];
 	
 	
-	private int cX, cY; // Center x and y
+	private float cX, cY; // Center x and y
 	private float cZ;	// Center z
 	
 	private boolean surfaceCreated;
@@ -119,7 +119,7 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
 		surfaceCreated = s;
 	}
 	
-	public RenderModel getNewModel(int x, int y, Sprite sprite){
+	public RenderModel getNewModel(float x, float y, Sprite sprite){
 		RenderModel square = modelPool.newObject();
 		square.resetColor();
 		square.set(x,y,sprite.getWidth(),sprite.getHeight(),sprite);
@@ -153,15 +153,15 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
 
         // Set the camera position (View matrix)
         Matrix.setLookAtM(mVMatrix, 0,
-        		0.0f, 0.0f, cZ,
-        		0.0f, 0.0f, 0.0f,
-        		0.0f, 1.0f, 0.0f);
+        		0.0f, 0.0f, 7.0f,		// Eye
+        		0.0f, 0.0f, 0.0f,	// Center
+        		0.0f, 1.0f, 0.0f);	// Up
    
         // Calculate the projection and view transformation
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjMatrix, 0, mVMatrix, 0);
+        Matrix.multiplyMM(mVPMatrix, 0, mProjMatrix, 0, mVMatrix, 0);
         
         for (int i = 0; i < s_instance.renderObjects.getCompiledData().size(); i++)
-        	((GameObject)s_instance.renderObjects.getCompiledData().get(i)).draw(mMVPMatrix, cX, cY, cZ);
+        	((GameObject)s_instance.renderObjects.getCompiledData().get(i)).draw(mVPMatrix, cX, cY, cZ);
         
         workFrameRate();
     }

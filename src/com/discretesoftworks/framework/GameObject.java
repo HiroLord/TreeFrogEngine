@@ -14,7 +14,7 @@ public abstract class GameObject extends GriddedObject{
 	
 	private boolean init;
 	
-	public GameObject(int x, int y, int width, int height, Sprite sprite){
+	public GameObject(float x, float y, float width, float height, Sprite sprite){
 		super(x,y,width,height);
 		this.life = 1;
 		this.sprite = sprite;
@@ -102,9 +102,9 @@ public abstract class GameObject extends GriddedObject{
 	}
 	
 	//Recommended override and super call
-	public void draw(float[] mvpMatrix, int centerX, int centerY, float centerZ){
+	public void draw(float[] vpMatrix, float centerX, float centerY, float centerZ){
 		if (init)
-			myModel.draw(mvpMatrix, centerX, centerY, centerZ);
+			myModel.draw(vpMatrix, centerX, centerY, centerZ);
 		else
 			init();
 	}

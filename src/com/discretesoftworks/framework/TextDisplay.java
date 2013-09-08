@@ -67,8 +67,8 @@ public class TextDisplay extends GameObject implements TextHolder{
 			}
 			else {
 				displayText[i].setSprite(myFont.getLetter(text.charAt(i)));
-				int w = displayText[i].getSprite().getWidth();
-				int h = displayText[i].getSprite().getHeight();
+				float w = displayText[i].getSprite().getWidth();
+				float h = displayText[i].getSprite().getHeight();
 				float scale = (float)size/h;
 				displayText[i].setWidth((int)(w*scale));
 				displayText[i].setHeight((int)(h*scale));
@@ -84,13 +84,13 @@ public class TextDisplay extends GameObject implements TextHolder{
 		}
 		this.text = text;
 		
-		int x = getX();
+		float x = getX();
 		if (hAlign == FA_CENTER) {
 			x -= getTextWidth()/2;
 		} else if (hAlign == FA_RIGHT) {
 			x -= getTextWidth();
 		}
-		int y = getY();
+		float y = getY();
 		for (int i = 0; i < displayText.length; i++){
 			displayText[i].setVisible(false);
 			displayText[i].setHudElement(hudElement);
@@ -102,8 +102,8 @@ public class TextDisplay extends GameObject implements TextHolder{
 			}
 			else  {
 				displayText[i].setSprite(myFont.getLetter(text.charAt(i)));
-				int w = displayText[i].getSprite().getWidth();
-				int h = displayText[i].getSprite().getHeight();
+				float w = displayText[i].getSprite().getWidth();
+				float h = displayText[i].getSprite().getHeight();
 				float scale = (float)size/h;
 				displayText[i].setWidth((int)(w*scale));
 				displayText[i].setHeight((int)(h*scale));
@@ -132,12 +132,12 @@ public class TextDisplay extends GameObject implements TextHolder{
 	}
 	
 	@Override
-	public void setX(int x){
+	public void setX(float x){
 		changeX(x-getX());
 	}
 	
 	@Override
-	public void setY(int y){
+	public void setY(float y){
 		changeY(y-getY());
 	}
 	
@@ -159,9 +159,9 @@ public class TextDisplay extends GameObject implements TextHolder{
 	}
 	
 	@Override
-	public void draw(float[] mvpMatrix, int centerX, int centerY, float centerZ){
+	public void draw(float[] vpMatrix, float centerX, float centerY, float centerZ){
 		for (int i = 0; i < displayText.length; i++){
-			displayText[i].draw(mvpMatrix, centerX, centerY, centerZ);
+			displayText[i].draw(vpMatrix, centerX, centerY, centerZ);
 		}
 	}
 	

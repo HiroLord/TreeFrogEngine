@@ -68,7 +68,6 @@ public abstract class GameRenderer {
 	}
 	
 	public void add(GameObject o){
-		System.out.println("Adding to add.");
 		toAdd.add(o);
 	}
 	
@@ -77,14 +76,10 @@ public abstract class GameRenderer {
 	}
 	
 	public void addSolid(GameObject s){
-		System.out.println("Adding solid!");
 		solidObjects.add(s);
-		for (GriddedObject q : solidObjects)
-			System.out.println(q);
 	}
 	
 	public void removeSolid(GameObject s){
-		System.out.println("Removing solid!");
 		solidObjects.remove(s);
 	}
 	
@@ -128,7 +123,7 @@ public abstract class GameRenderer {
     public abstract int getViewHeight();
     public abstract float getViewScale();
 	
-	public abstract RenderModel getNewModel(int x, int y, Sprite sprite);
+	public abstract RenderModel getNewModel(float x, float y, Sprite sprite);
 	public abstract void freeModel(RenderModel model);
 	public abstract void setBGColor(float r, float g, float b, float a);
 	public abstract boolean getSurfaceCreated();
