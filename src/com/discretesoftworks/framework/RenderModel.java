@@ -92,7 +92,7 @@ public class RenderModel extends GriddedObject{
     private boolean set;
     
     public RenderModel() {
-    	super(0,0,1,1);
+    	super(0,0,0,1,1);
     	
     	hudElement = false;
     	visible = false;
@@ -153,12 +153,14 @@ public class RenderModel extends GriddedObject{
         GameRenderer.s_instance.setSurfaceCreated(true);
     }
     
+    public void remake3DModel(float[] m){
+    	this.squareCoords = m;
+    	setSize(this.squareCoords);
+    }
+    
     public void remakeModelMatrix(){
     	Matrix.setIdentityM(mModelMatrix, 0);
-    	//Matrix.scaleM(mModelMatrix, 0, scale[0], scale[1], scale[2]);
-//    	mModelMatrix[3]  = getX();
-//    	mModelMatrix[7]  = getY();
-//    	mModelMatrix[11] = 0f;
+    	Matrix.scaleM(mModelMatrix, 0, scale[0], scale[1], scale[2]);
     	Matrix.translateM(mModelMatrix, 0, getX(), getY(), getZ());
     }
     

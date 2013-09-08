@@ -5,9 +5,9 @@ import com.discretesoftworks.framework.GameObject;
 
 public class Floor extends GameObject{
 
-	public Floor(float x, float y, float width, float height){
-		super(x,y,width,height,Assets.sprWall);
-		setZ(1);
+	public Floor(float x, float y, float z, float width, float height){
+		super(x,y,z,width,height,Assets.sprWall);
+
 		setSolid(true);
 	}
 	

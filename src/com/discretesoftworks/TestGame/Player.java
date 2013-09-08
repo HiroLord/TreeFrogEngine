@@ -6,7 +6,6 @@ import tv.ouya.console.api.OuyaController;
 
 import com.discretesoftworks.OUYAframework.OuyaGameController;
 import com.discretesoftworks.framework.Assets;
-import com.discretesoftworks.framework.Directional;
 import com.discretesoftworks.framework.GameRenderer;
 import com.discretesoftworks.framework.MovingObject;
 
@@ -22,12 +21,12 @@ public class Player extends MovingObject{
 	
 	private Random rand;
 	
-	public Player(float x, float y, float width, float height) {
-		super(x, y, width, height, Assets.sprGlass);
+	public Player(float x, float y, float z, float width, float height) {
+		super(x, y, z, width, height, Assets.sprGlass);
 		left = false;
 		right = false;
 		jump = false;
-		pNum = 0;
+		pNum = TestController.playerNum;
 		
 		rand = new Random();
 		
@@ -38,6 +37,10 @@ public class Player extends MovingObject{
 	}
 
 	private void grabControllerInfo(OuyaController c){
+		
+		if (c == null)
+			return;
+		
 		right = false;
 		left = false;
 		jump = false;
@@ -54,7 +57,7 @@ public class Player extends MovingObject{
 			click = false;
 		
 		if (c.getButton(OuyaController.BUTTON_A)){
-			new Floor((rand.nextFloat()*6)-3f, (rand.nextFloat())-0.5f, 1, 1);
+			new Floor((rand.nextFloat()*6)-3f, (rand.nextFloat())-0.5f, 0f, 1, 1);
 		}
 		
 		if (!OuyaGameController.stickInDeadzone(c, 1)){
@@ -68,6 +71,7 @@ public class Player extends MovingObject{
 	
 	@Override
 	public void update(float deltaTime) {
+		pNum = TestController.playerNum;
 		grabControllerInfo(OuyaController.getControllerByPlayer(pNum));
 		
 		if (left)
@@ -87,8 +91,10 @@ public class Player extends MovingObject{
 		else if (getdx() < -maxSpeed)
 			setdx(-maxSpeed);
 		
-		if (placeFree(getX(), getY() + MovingObject.gravity)){
-			changedy(MovingObject.gravity);
+		float gravity = -.005f;
+		
+		if (placeFree(getX(), getY() + gravity)){
+			changedy(gravity);
 		} else if (jump) {
 			setdy(.1f);
 		}
@@ -97,21 +103,4 @@ public class Player extends MovingObject{
 		
 		super.update(deltaTime);
 	}
-	
-	private boolean placeFree(float x, float y){
-		float dx = x-getX();
-		float dy = y-getY();
-		changeX(dx);
-		changeY(dy);
-		
-		boolean noCollide = true;
-		
-		if (Directional.checkAllCollisions(this, GameRenderer.s_instance.solidObjects) != null)
-			noCollide = false;
-		
-		changeX(-dx);
-		changeY(-dy);
-		return noCollide;
-	}
-
 }

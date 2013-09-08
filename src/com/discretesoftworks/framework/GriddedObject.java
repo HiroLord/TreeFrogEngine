@@ -9,14 +9,15 @@ public class GriddedObject {
 	private float width, height;
 	
 	
-	public GriddedObject(float x, float y){
-		this(x,y,2,2);
+	public GriddedObject(float x, float y, float z){
+		this(x,y,z,1,1);
 	}
 	
 	@SuppressLint("UseValueOf")
-	public GriddedObject(float x, float y, float width, float height){
+	public GriddedObject(float x, float y, float z, float width, float height){
 		this.x = x;
 		this.y = y;
+		this.z = z;
 		this.depth = new Integer(0);
 		setWidth(width);
 		setHeight(height);

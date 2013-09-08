@@ -3,15 +3,48 @@ package com.discretesoftworks.framework;
 
 public class View extends GriddedObject{
 	
-	private float newX, newY;
+	private float newX, newY, newZ;
+	private float centerX, centerY, centerZ;
 	
-	private static final float baseZ = 3f;
+	private static final float baseZ = 5.5f;
 	private float speed;
 	
-	public View(int x, int y){
-		super(x,y);
+	public View(float x, float y, float z){
+		super(x,y,z);
 		setZ(baseZ);
 		speed = 16;
+		
+		centerX = centerY = centerZ = 0f;
+	}
+	
+	public float getCenterX(){
+		return centerX;
+	}
+	
+	public float getCenterY(){
+		return centerY;
+	}
+	
+	public float getCenterZ(){
+		return centerZ;
+	}
+	
+	public void setCenter(float cX, float cY, float cZ){
+		this.centerX = cX;
+		this.centerY = cY;
+		this.centerZ = cZ;
+	}
+	
+	public void changeCenterX(float dcX){
+		centerX += dcX;
+	}
+	
+	public void changeCenterY(float dcY){
+		centerY += dcY;
+	}
+	
+	public void changeCenterZ(float dcZ){
+		centerZ += dcZ;
 	}
 	
 	public float getBaseZ(){
@@ -30,12 +63,20 @@ public class View extends GriddedObject{
 		this.newY = newY;
 	}
 	
+	public void setNewZ(float newZ){
+		this.newZ = newZ;
+	}
+	
 	public float getNewX(){
 		return newX;
 	}
 	
 	public float getNewY(){
 		return newY;
+	}
+	
+	public float getNewZ(){
+		return newZ;
 	}
 	
 	public void setSpeed(float speed){
@@ -58,15 +99,15 @@ public class View extends GriddedObject{
 		setNewY(y);
 	}
 	
-	public void center(){
-		setX(GameRenderer.s_instance.getScreenWidth()/2);
-		setNewX(getX());
-		setY(GameRenderer.s_instance.getScreenHeight()/2);
-		setNewY(getY());
+	@Override
+	public void setZ(float z){
+		super.setZ(z);
+		setNewZ(z);
 	}
 	
 	public void update(float deltaTime){
-		setX((newX+getX())/(int)speed);
-		setY((newY+getX())/(int)speed);
+		setX((newX+getX())/speed);
+		setY((newY+getX())/speed);
+		setZ((newZ+getZ())/speed);
 	}
 }

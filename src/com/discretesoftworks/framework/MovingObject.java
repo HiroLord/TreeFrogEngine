@@ -4,27 +4,71 @@ public class MovingObject extends GameObject{
 	
 	private float dx, dy;
 	
-	public static float gravity = -0.005f;
+	private float speed;
+	private float dir;
 	
-	public MovingObject(float x, float y, float width, float height, Sprite sprite){
-		super(x,y,width,height,sprite);
+	private float acceleration = .005f;
+	
+	private boolean autoMove;
+	
+	public MovingObject(float x, float y, float z, float width, float height, Sprite sprite){
+		super(x,y,z,width,height,sprite);
+		
+		autoMove = false;
+		speed = 0f;
+		dir = 0f;
+	}
+	
+	public void setAutoMove(boolean m){
+		autoMove = m;
+	}
+	
+	public boolean getAutoMove(){
+		return autoMove;
+	}
+	
+	public void setSpeed(float speed){
+		this.speed = speed;
+	}
+	
+	public float getSpeed(){
+		return speed;
+	}
+	
+	public void setDir(float dir){
+		this.dir = dir;
+	}
+	
+	public float getDir(){
+		return dir;
+	}
+	
+	public void presetMovements(){
+		dx = Directional.lengthDirX(dir, speed);
+		dy = Directional.lengthDirY(dir, speed);
 	}
 	
 	public void moveWithoutCollisions(){
+		if (autoMove)
+			presetMovements();
+		
 		changeX(getdx());
 		changeY(getdy());
 	}
 	
 	public void moveCheckCollisions(){
+		if (autoMove)
+			presetMovements();
+		
 		changeY(getdy());
-		float moveY = getdy() > 0 ? gravity : -gravity;
+		float moveY = getdy() > 0 ? -acceleration : acceleration;
 		while (Directional.checkAllCollisions(this, GameRenderer.s_instance.solidObjects) != null){
 			changeY(moveY);
 			setdy(0);
 		}
 		
 		changeX(getdx());
-		float moveX = getdx() > 0 ? gravity : -gravity;
+		float moveX = getdx() > 0 ? -acceleration : acceleration;
 		while (Directional.checkAllCollisions(this, GameRenderer.s_instance.solidObjects) != null){
 			changeX(moveX);
 			setdx(0);

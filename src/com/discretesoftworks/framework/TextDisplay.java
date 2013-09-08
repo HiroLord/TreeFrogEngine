@@ -11,8 +11,8 @@ public class TextDisplay extends GameObject implements TextHolder{
 	private int size, length;
 	private int hAlign;
 	
-	public TextDisplay(int x, int y, GameFont myFont, int length, int size){
-		super(x,y,2,2,null);
+	public TextDisplay(float x, float y, float z, GameFont myFont, int length, int size){
+		super(x,y,z,2,2,null);
 		this.myFont = myFont;
 		this.length = length;
 		this.size = size;

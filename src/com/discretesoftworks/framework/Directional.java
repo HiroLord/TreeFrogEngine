@@ -4,10 +4,12 @@ import java.util.ArrayList;
 
 public abstract class Directional {
 
+	// Gets the x-length of a total length in a given direction.
 	public static float lengthDirX(float dir, float dist){
 		return (float) Math.sin(Math.toRadians(-dir))*dist;
 	}
 	
+	// Gets the y-length of a total length in a given direction.
 	public static float lengthDirY(float dir, float dist){
 		return (float) Math.cos(Math.toRadians(-dir))*dist;
 	}

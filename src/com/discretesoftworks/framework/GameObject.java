@@ -14,8 +14,8 @@ public abstract class GameObject extends GriddedObject{
 	
 	private boolean init;
 	
-	public GameObject(float x, float y, float width, float height, Sprite sprite){
-		super(x,y,width,height);
+	public GameObject(float x, float y, float z, float width, float height, Sprite sprite){
+		super(x,y,z,width,height);
 		this.life = 1;
 		this.sprite = sprite;
 		depthChanged = false;
@@ -94,12 +94,32 @@ public abstract class GameObject extends GriddedObject{
 		myModel.setColor(r,g,b,a);
 	}
 	
+	public RenderModel getModel(){
+		return myModel;
+	}
+	
 	public void updateModel(){
 		myModel.setX(getX());
 		myModel.setY(getY());
 		myModel.setZ(getZ());
 		myModel.setWidth(getWidth());
 		myModel.setHeight(getHeight());
+	}
+	
+	public boolean placeFree(float x, float y){
+		float dx = x-getX();
+		float dy = y-getY();
+		changeX(dx);
+		changeY(dy);
+		
+		boolean noCollide = true;
+		
+		if (Directional.checkAllCollisions(this, GameRenderer.s_instance.solidObjects) != null)
+			noCollide = false;
+		
+		changeX(-dx);
+		changeY(-dy);
+		return noCollide;
 	}
 	
 	//Recommended override and super call

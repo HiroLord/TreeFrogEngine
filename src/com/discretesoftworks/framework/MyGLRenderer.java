@@ -27,8 +27,8 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
     //private final float[] mRotationMatrix = new float[16];
 	
 	
-	private float cX, cY; // Center x and y
-	private float cZ;	// Center z
+	private float eX, eY; // Center x and y
+	private float eZ;	// Center z
 	
 	private boolean surfaceCreated;
 	
@@ -51,8 +51,8 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
 	
 	public MyGLRenderer(AndroidGame game, final float scale){
 		s_instance = this;
-		cX = 0;
-		cY = 0;
+		eX = 0;
+		eY = 0;
 		context = (Context)game;
 		setGame(game);
 		surfaceCreated = false;
@@ -144,31 +144,23 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
 		getGame().getController().update(deltaTime);
     	getGame().getController().paint();
     	
-    	cX = getGame().getController().getView().getX();
-    	cY = getGame().getController().getView().getY();
-    	cZ = getGame().getController().getView().getZ();
+    	View v = getGame().getController().getView();
     	
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
         // Set the camera position (View matrix)
         Matrix.setLookAtM(mVMatrix, 0,
-        		0.0f + cX, 0.0f + cY, 5.5f,	// Eye
-        		0.0f + cX, 0.0f + cY, 0.0f,	// Center
-        		0.0f, 1.0f, 0.0f);	// Up
+        		v.getX(), v.getY(), v.getZ(),	// Eye
+        		v.getCenterX(), v.getCenterY(), v.getCenterZ(),	// Center
+        		0.0f, 0.0f, 1.0f);	// Up
         
-//        Matrix.setIdentityM(mVMatrix, 0);
-//        Matrix.scaleM(mVMatrix, 0, 1.01f, 1.01f, 1.01f);
-//        mVMatrix[3] = 0.0f;
-//        mVMatrix[7] = 0.0f;
-//        mVMatrix[14] = -5.0f;
-//
-        Matrix.rotateM(mVMatrix, 0, 45.0f, 1.0f, 0.0f, 0.0f);
+        //Matrix.rotateM(mVMatrix, 0, -45.0f, 1.0f, 0.0f, 0.0f);
    
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mVPMatrix, 0, mProjMatrix, 0, mVMatrix, 0);
         
         for (int i = 0; i < s_instance.renderObjects.getCompiledData().size(); i++)
-        	((GameObject)s_instance.renderObjects.getCompiledData().get(i)).draw(mVPMatrix, cX, cY, cZ);
+        	((GameObject)s_instance.renderObjects.getCompiledData().get(i)).draw(mVPMatrix, eX, eY, eZ);
         
         workFrameRate();
     }
@@ -194,14 +186,12 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
         
         float ratio = (float) w / h;
         
-        cX = w/2;
-        cY = h/2;
+        eX = w/2;
+        eY = h/2;
 
-        // this projection matrix is applied to object coordinates
-        // in the onDrawFrame() method
-        //Matrix.frustumM(mProjMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
-		//Matrix.orthoM(mProjMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
-		Matrix.perspectiveM(mProjMatrix, 0, 69.0f, ratio, 1, 20);
+//		Matrix.frustumM(mProjMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
+//		Matrix.orthoM(mProjMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
+		Matrix.perspectiveM(mProjMatrix, 0, 69.0f, ratio, 1, 100);
     }
     
     public static int loadShader(int type, String shaderCode){

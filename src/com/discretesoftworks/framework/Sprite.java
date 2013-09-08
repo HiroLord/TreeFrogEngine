@@ -10,12 +10,12 @@ public class Sprite extends GriddedObject{
 	private float maskWidth, maskHeight;
 	
 	public Sprite(Bitmap source, int frames){
-		super(0,0,2,2);
+		super(0,0,0,2,2);
 		generateSprite(source,frames);
 	}
 	
 	public Sprite(final int resourceId, int frames){
-		super(0,0,2,2);
+		super(0,0,0,2,2);
 		Context context = (Context)GameRenderer.s_instance.getGame();
 		final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inScaled = false;   // No pre-scaling
