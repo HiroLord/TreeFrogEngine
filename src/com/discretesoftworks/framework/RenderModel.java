@@ -63,6 +63,7 @@ public class RenderModel extends GriddedObject{
     static final int COORDS_PER_VERTEX = 3;
     private PointF topLeft = new PointF(0,0);
     private float[] mModelMatrix = new float[16];
+    private float[] mvpMatrix = new float[16];
     private float squareCoords[] = { -0.5f,  0.5f, 0f,
             						 -0.5f, -0.5f, 0f,
             						  0.5f, -0.5f, 0f,
@@ -352,8 +353,6 @@ public class RenderModel extends GriddedObject{
 	        // get handle to shape's transformation matrix
 	        mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
 	        MyGLRenderer.checkGlError("glGetUniformLocation");
-	
-	        float[] mvpMatrix = new float[16];
 	        
 	        Matrix.multiplyMM(mvpMatrix, 0, mModelMatrix, 0, vpMatrix, 0);
 	        
