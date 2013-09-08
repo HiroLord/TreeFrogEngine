@@ -32,7 +32,7 @@ public class RenderModel extends GriddedObject{
         "attribute vec4 vPosition;" +
         "void main() {" +
         // the matrix must be included as a modifier of gl_Position
-        "  gl_Position = vPosition * uMVPMatrix;" +
+        "  gl_Position = uMVPMatrix * vPosition;" +
 		      //Test
 		      "v_TexCoordinate = a_TexCoordinate;" +
 		      //End Test
@@ -156,9 +156,10 @@ public class RenderModel extends GriddedObject{
     public void remakeModelMatrix(){
     	Matrix.setIdentityM(mModelMatrix, 0);
     	//Matrix.scaleM(mModelMatrix, 0, scale[0], scale[1], scale[2]);
-    	mModelMatrix[3]  = getX();
-    	mModelMatrix[7]  = getY();
-    	mModelMatrix[11] = 0f;
+//    	mModelMatrix[3]  = getX();
+//    	mModelMatrix[7]  = getY();
+//    	mModelMatrix[11] = 0f;
+    	Matrix.translateM(mModelMatrix, 0, getX(), getY(), getZ());
     }
     
     public void set(float x, float y, float width, float height, Sprite mySprite){
@@ -237,10 +238,6 @@ public class RenderModel extends GriddedObject{
     	return visible;
     }
     
-    public float getZ(){
-    	return 0f;
-    }
-    
     public void increment(){
     	imageSingle += imageSpeed;
     	if (imageSingle >= mySprite.getSpriteLength())
@@ -317,7 +314,8 @@ public class RenderModel extends GriddedObject{
 	        mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
 	        MyGLRenderer.checkGlError("glGetUniformLocation");
 	        
-	        Matrix.multiplyMM(mvpMatrix, 0, mModelMatrix, 0, vpMatrix, 0);
+	        //Matrix.multiplyMM(mvpMatrix, 0, mModelMatrix, 0, vpMatrix, 0);
+	        Matrix.multiplyMM(mvpMatrix, 0, vpMatrix, 0, mModelMatrix, 0);
 	        
 	        // Apply the projection and view transformation
 	        GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);

@@ -97,6 +97,7 @@ public abstract class GameObject extends GriddedObject{
 	public void updateModel(){
 		myModel.setX(getX());
 		myModel.setY(getY());
+		myModel.setZ(getZ());
 		myModel.setWidth(getWidth());
 		myModel.setHeight(getHeight());
 	}

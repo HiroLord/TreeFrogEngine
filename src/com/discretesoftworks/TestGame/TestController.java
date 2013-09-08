@@ -33,8 +33,8 @@ public class TestController extends OuyaGameController{
 		
 		if (!OuyaGameController.stickInDeadzone(c, 2)){
 			PointF point = OuyaGameController.getStickValues(c, 2);
-			view.changeX(point.x/2f);
-			view.changeY(point.y/2f);
+			view.changeX(point.x/4f);
+			view.changeY(-point.y/4f);
 		}
 	}
 
