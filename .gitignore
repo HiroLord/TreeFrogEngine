@@ -1,2 +1,4 @@
 bin
 src/com/discretesoftworks/zRTS
+.classpath
+.project
