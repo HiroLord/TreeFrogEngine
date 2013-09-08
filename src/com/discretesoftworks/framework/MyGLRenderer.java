@@ -152,7 +152,7 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
 
         // Set the camera position (View matrix)
         Matrix.setLookAtM(mVMatrix, 0,
-        		0.0f, -10.0f, 7.0f,		// Eye
+        		0.0f + cX, 0.0f + cY, 5.5f,	// Eye
         		0.0f, 0.0f, 0.0f,	// Center
         		0.0f, 1.0f, 0.0f);	// Up
    

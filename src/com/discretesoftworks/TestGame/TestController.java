@@ -1,5 +1,8 @@
 package com.discretesoftworks.TestGame;
 
+import tv.ouya.console.api.OuyaController;
+import android.graphics.PointF;
+
 import com.discretesoftworks.OUYAframework.OuyaGameController;
 import com.discretesoftworks.framework.View;
 
@@ -9,7 +12,6 @@ public class TestController extends OuyaGameController{
 	
 	public TestController(){
 		view = new View(0,0);
-		view.center();
 	}
 	
 	public void init(){
@@ -17,6 +19,8 @@ public class TestController extends OuyaGameController{
 		new Floor(0, 0f, 1, 1);
 		new Floor(-1f, 0f, 1, 1);
 		new Floor(1f, 0f, 1, 1);
+		new Floor(-2f, 0f, 1, 1);
+		new Floor(2f, 0f, 1, 1);
 		super.init();
 	}
 	
@@ -24,9 +28,19 @@ public class TestController extends OuyaGameController{
 	public View getView() {
 		return view;
 	}
+	
+	private void grabControllerInfo(OuyaController c){
+		
+		if (!OuyaGameController.stickInDeadzone(c, 2)){
+			PointF point = OuyaGameController.getStickValues(c, 2);
+			view.changeX(point.x/2f);
+			view.changeY(point.y/2f);
+		}
+	}
 
 	@Override
 	public void update(float deltaTime) {
+		grabControllerInfo(OuyaController.getControllerByPlayer(0));
 		super.update(deltaTime);
 	}
 

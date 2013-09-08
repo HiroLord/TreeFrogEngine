@@ -5,7 +5,6 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
-import android.graphics.PointF;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
@@ -61,7 +60,7 @@ public class RenderModel extends GriddedObject{
     // number of coordinates per vertex in this array
 
     static final int COORDS_PER_VERTEX = 3;
-    private PointF topLeft = new PointF(0,0);
+    //private PointF topLeft = new PointF(0,0);
     private float[] mModelMatrix = new float[16];
     private float[] mvpMatrix = new float[16];
     private float squareCoords[] = { -0.5f,  0.5f, 0f,
