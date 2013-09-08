@@ -155,6 +155,21 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
         		0.0f + cX, 0.0f + cY, 5.5f,	// Eye
         		0.0f, 0.0f, 0.0f,	// Center
         		0.0f, 1.0f, 0.0f);	// Up
+        
+        for (int i = 0; i < 4; i++) {
+        	for (int j = 0; j < 4; j++)
+        		System.out.print(mVMatrix[i*4+j] + " ");
+        	System.out.println();
+        }
+        System.out.println("Done");
+        
+//        Matrix.setIdentityM(mVMatrix, 0);
+//        Matrix.scaleM(mVMatrix, 0, 1.01f, 1.01f, 1.01f);
+//        mVMatrix[3] = 0.0f;
+//        mVMatrix[7] = 0.0f;
+//        mVMatrix[14] = -5.0f;
+//
+//        Matrix.rotateM(mVMatrix, 0, 45.0f, 1.0f, 0.0f, 0.0f);
    
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mVPMatrix, 0, mProjMatrix, 0, mVMatrix, 0);
@@ -193,7 +208,7 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
         // in the onDrawFrame() method
         //Matrix.frustumM(mProjMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
 		//Matrix.orthoM(mProjMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
-		Matrix.perspectiveM(mProjMatrix, 0, 69.0f, ratio, 3, 7);
+		Matrix.perspectiveM(mProjMatrix, 0, 69.0f, ratio, 1, 20);
     }
     
     public static int loadShader(int type, String shaderCode){
