@@ -17,8 +17,7 @@ public abstract class Directional {
 	public static float pointDistance(float x1, float y1, float x2, float y2){
 		float dx = x2-x1;
 		float dy = y2-y1;
-		float mag = (float)Math.sqrt(dx*dx + dy*dy);
-		return mag;
+		return (float)Math.sqrt(dx*dx + dy*dy);
 	}
 	
 	public static float pointDirection(float x1, float y1, float x2, float y2){

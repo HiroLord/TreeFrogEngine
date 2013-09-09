@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.discretesoftworks.TestGame"
+    package="com.discretesoftworks.zRTS"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -18,11 +18,11 @@
         android:hardwareAccelerated="true"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="TreeFrogEngine">
+        android:label="Real Time Strategy">
         <activity
-            android:name=".TestGame"
+            android:name=".RTSGame"
             android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="TreeFrogEngine"
+            android:label="Real Time Strategy"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
             <intent-filter>

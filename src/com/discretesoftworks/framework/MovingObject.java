@@ -44,6 +44,7 @@ public class MovingObject extends GameObject{
 	}
 	
 	public void update(float deltaTime){
+		//moveWithoutCollisions();
 		moveCheckCollisions();
 		super.update(deltaTime);
 	}
