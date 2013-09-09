@@ -43,9 +43,20 @@ public class MovingObject extends GameObject{
 		return dir;
 	}
 	
+	public void update(float deltaTime){
+		moveCheckCollisions();
+		super.update(deltaTime);
+	}
+	
 	public void presetMovements(){
-		dx = Directional.lengthDirX(dir, speed);
-		dy = Directional.lengthDirY(dir, speed);
+		if (speed == 0f){
+			setdx(0);
+			setdy(0);
+		}
+		else {
+			dx = Directional.lengthDirX(dir, speed);
+			dy = Directional.lengthDirY(dir, speed);
+		}
 	}
 	
 	public void moveWithoutCollisions(){

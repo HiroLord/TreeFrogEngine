@@ -11,7 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 
-import com.discretesoftworks.TestGame.R;
+import com.discretesoftworks.zRTS.R;
 
 
 

@@ -13,7 +13,7 @@ import android.opengl.Matrix;
 import android.util.Log;
 
 import com.discretesoftworks.framework.Pool.PoolObjectFactory;
-import com.discretesoftworks.TestGame.R;
+import com.discretesoftworks.zRTS.R;
 
 public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer {
 

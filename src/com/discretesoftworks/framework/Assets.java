@@ -1,6 +1,6 @@
 package com.discretesoftworks.framework;
 
-import com.discretesoftworks.TestGame.R;
+import com.discretesoftworks.zRTS.R;
 
 public class Assets {
 	

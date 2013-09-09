@@ -14,7 +14,7 @@ public abstract class Directional {
 		return (float) Math.cos(Math.toRadians(-dir))*dist;
 	}
 	
-	public static float pointDistance(int x1, int y1, int x2, int y2){
+	public static float pointDistance(float x1, float y1, float x2, float y2){
 		float dx = x2-x1;
 		float dy = y2-y1;
 		float mag = (float)Math.sqrt(dx*dx + dy*dy);
