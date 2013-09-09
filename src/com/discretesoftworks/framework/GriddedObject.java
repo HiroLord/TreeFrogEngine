@@ -2,6 +2,8 @@ package com.discretesoftworks.framework;
 
 import android.annotation.SuppressLint;
 
+// Allows an object to be added to the "grid"
+//	- Basically allows the object to have coordinates and be moved
 public class GriddedObject {
 
 	private float x, y, z;
@@ -18,7 +20,7 @@ public class GriddedObject {
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		this.depth = new Integer(0);
+		this.depth = new Integer(0); // Temporary code
 		setWidth(width);
 		setHeight(height);
 	}
@@ -26,8 +28,6 @@ public class GriddedObject {
 	public void setDepth(int depth){
 		this.depth = depth;
 	}
-	
-	
 	
 	public Integer getDepth(){
 		return depth;

@@ -1,7 +1,8 @@
 package com.discretesoftworks.framework;
 
 
-
+// Game object class
+// All visible objects in the game should extend this class
 public abstract class GameObject extends GriddedObject{
 
 	private float life;
@@ -29,6 +30,13 @@ public abstract class GameObject extends GriddedObject{
 	public void init(){
 		myModel = GameRenderer.s_instance.getNewModel(getX(),getY(),sprite);
 		setDimensions(getWidth(),getHeight());
+		float w = getWidth()/2f;
+		float h = getHeight()/2f;
+		float squareCoords[] = {-w,  h, 0f,
+				 				-w, -h, 0f,
+				 				 w, -h, 0f,
+				 				 w,  h, 0f } ;
+		getModel().remake3DModel(squareCoords);
 		sprite.setMask(getWidth(),getHeight());
 		init = true;
 	}

@@ -9,6 +9,7 @@ import java.net.UnknownHostException;
 
 import com.discretesoftworks.framework.GameController;
 
+// Class for adding online communications.
 public abstract class NetworkGameController extends GameController{
 
 	public static Writer writer;

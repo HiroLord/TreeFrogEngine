@@ -1,6 +1,6 @@
 package com.discretesoftworks.framework;
 
-
+// Controls camera position and possible movement
 public class View extends GriddedObject{
 	
 	private float newX, newY, newZ;

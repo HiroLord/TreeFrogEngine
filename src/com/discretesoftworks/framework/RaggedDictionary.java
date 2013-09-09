@@ -2,6 +2,7 @@ package com.discretesoftworks.framework;
 
 import java.util.ArrayList;
 
+// A Dictionary where all values are arrays.
 public class RaggedDictionary<T,E>{
 	
 	private Pair<T,ArrayList<E>>[] data;

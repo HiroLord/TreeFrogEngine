@@ -14,11 +14,13 @@ import android.widget.EditText;
 import com.discretesoftworks.zRTS.R;
 
 
-
+// AndroidGame
+// Initial class for running an Android Game.
+// Is both the Activity and the Context.
 public abstract class AndroidGame extends Activity{
 
-    private GLSurfaceView mGLView;
-    private GameController controller;
+    private GLSurfaceView mGLView; 		// View
+    private GameController controller;	// Controller
     
     public static AndroidGame s_instance;
     

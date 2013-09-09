@@ -3,6 +3,9 @@ package com.discretesoftworks.framework;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+
+// A controller is what runs code to make the game run.
+
 public abstract class GameController {
 
 	private boolean init;
@@ -22,11 +25,14 @@ public abstract class GameController {
 		return init;
 	}
 	
-	public abstract View getView();
+	// Update is called by the game loop inside MyGLRenderer
+	// Call up!
 	public void update(float deltaTime){
 		if (!getInit())
 			init();
 	}
+	
+	public abstract View getView();
 	public abstract void paint();
 	public abstract boolean onKeyDown(int keyCode, KeyEvent event);
 	public abstract boolean onKeyUp(int keyCode, KeyEvent event);

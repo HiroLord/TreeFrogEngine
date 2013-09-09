@@ -1,5 +1,6 @@
 package com.discretesoftworks.framework;
 
+// A numerical matrix.
 public class NumericalMatrix {
 
 	private double[] array;

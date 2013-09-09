@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 
+// Parses and Holds a PNG font and its sprites
 public class GameFont {
 	
 	private Sprite[] fontLetters;
@@ -71,6 +72,7 @@ public class GameFont {
 		holder = fontLetters[0];
 	}
 	
+	// Grab the sprite of our particular char
 	public Sprite getLetter(char c){
 		if (letters.indexOf(c) >= 0)
 			return fontLetters[letters.indexOf(c)];
