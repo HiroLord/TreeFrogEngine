@@ -15,6 +15,8 @@ public abstract class GameObject extends GriddedObject{
 	
 	private boolean init;
 	
+	private boolean needUpdate = false;
+	
 	public GameObject(float x, float y, float z, float width, float height, Sprite sprite){
 		super(x,y,z,width,height);
 		this.life = 1;
@@ -36,7 +38,7 @@ public abstract class GameObject extends GriddedObject{
 				 				-w, -h, 0f,
 				 				 w, -h, 0f,
 				 				 w,  h, 0f } ;
-		getModel().remake3DModel(squareCoords);
+		getModel().new3DModel(squareCoords);
 		sprite.setMask(getWidth(),getHeight());
 		init = true;
 	}
@@ -106,12 +108,52 @@ public abstract class GameObject extends GriddedObject{
 		return myModel;
 	}
 	
+	@Override
+	public void setX(float x){
+		super.setX(x);
+		needUpdate = true;
+	}
+	
+	@Override
+	public void setY(float y){
+		super.setY(y);
+		needUpdate = true;
+	}
+	
+	@Override
+	public void setZ(float z){
+		super.setZ(z);
+		needUpdate = true;
+	}
+	
+	@Override
+	public void changeX(float dx){
+		super.changeX(dx);
+		needUpdate = true;
+	}
+	
+	@Override
+	public void changeY(float dy){
+		super.changeY(dy);
+		needUpdate = true;
+	}
+	
+	@Override
+	public void changeZ(float dz){
+		super.changeZ(dz);
+		needUpdate = true;
+	}
+	
 	public void updateModel(){
+		if (!needUpdate)
+			return;
 		myModel.setX(getX());
 		myModel.setY(getY());
 		myModel.setZ(getZ());
 		myModel.setWidth(getWidth());
 		myModel.setHeight(getHeight());
+		myModel.remakeModelMatrix();
+		needUpdate = false;
 	}
 	
 	public boolean placeFree(float x, float y){

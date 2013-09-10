@@ -26,6 +26,10 @@ public class Path {
 		return currentPoint < path.size() - 1;
 	}
 	
+	public PointF getPoint(int i){
+		return path.get(i);
+	}
+	
 	public int length(){
 		return path.size();
 	}

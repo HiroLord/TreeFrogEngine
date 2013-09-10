@@ -21,10 +21,23 @@ public class MovingObject extends GameObject{
 		dir = 0f;
 	}
 	
+	protected Path optimizePath(Path path){
+		for (int i = 0; i < path.length(); i++){
+			PointF a = path.getPoint(i);
+			for (int j = i+2; j < path.length(); j++){
+				PointF b = path.getPoint(j);
+				if (checkPathCollision(a.x,a.y,b.x,b.y) < 0f)
+					path.remove(path.getPoint(j-1));
+			}
+		}
+		return path;
+	}
+	
 	protected Path findPath(float endX, float endY, float dDir){
-		
 		Path path = new Path();
+		
 		//System.out.println("==================== THE LITTLE PATH FINDER THAT COULD ====================");
+		
 		boolean found = false;
 		PointF point = new PointF(getX(),getY());
 		int tries = 0;

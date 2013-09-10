@@ -25,13 +25,12 @@ public class RenderModel extends GriddedObject{
     	"attribute vec2 a_TexCoordinate;" +
     	"varying vec2 v_TexCoordinate;" +
     	//End Test
-        // This matrix member variable provides a hook to manipulate
-        // the coordinates of the objects that use this vertex shader
+
         "uniform mat4 uMVPMatrix;" +
 
         "attribute vec4 vPosition;" +
         "void main() {" +
-        // the matrix must be included as a modifier of gl_Position
+
         "  gl_Position = uMVPMatrix * vPosition;" +
 		      //Test
 		      "v_TexCoordinate = a_TexCoordinate;" +
@@ -63,12 +62,12 @@ public class RenderModel extends GriddedObject{
     //private PointF topLeft = new PointF(0,0);
     private float[] mModelMatrix = new float[16];
     private float[] mvpMatrix = new float[16];
-    private float squareCoords[] = { -0.5f,  0.5f, 0f,
+    private float[] squareCoords = { -0.5f,  0.5f, 0f,
             						 -0.5f, -0.5f, 0f,
             						  0.5f, -0.5f, 0f,
             						  0.5f,  0.5f, 0f } ;
 
-    private final short drawOrder[] = { 0, 1, 2, 0, 2, 3 }; // order to draw vertices
+    private final short[] drawOrder = { 0, 1, 2, 0, 2, 3 }; // order to draw vertices
 
     private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex
     
@@ -80,7 +79,7 @@ public class RenderModel extends GriddedObject{
     // Set color with red, green, blue and alpha (opacity) values
     float color[] = { .75f, .75f, .75f, 1.0f };
     
-    float translation[] = {0, 0, 0};
+    //float translation[] = {0, 0, 0};
     float scale[] = {1, 1, 1};
     
     private Sprite mySprite;
@@ -153,7 +152,7 @@ public class RenderModel extends GriddedObject{
         GameRenderer.s_instance.setSurfaceCreated(true);
     }
     
-    public void remake3DModel(float[] m){
+    public void new3DModel(float[] m){
     	this.squareCoords = m;
     	setSize(this.squareCoords);
     }
@@ -173,7 +172,6 @@ public class RenderModel extends GriddedObject{
         mTextureDataHandle = mySprite.getSprite(getImageSingle());
         set = true;
         visible = true;
-    	
     }
     
     public void free(){
@@ -264,9 +262,6 @@ public class RenderModel extends GriddedObject{
     	if (set && getVisible() && (getHudElement() || true/* (getRight() >= centerX-width*centerZ/3 && getLeft() <= centerX + width*centerZ/3 && getBottom() >= centerY-height*centerZ/3 && getTop() <= centerY+height*centerZ/3)*/)){
     		increment();
             mTextureDataHandle = mySprite.getSprite(getImageSingle());
-            
-            remakeModelMatrix();
-    		
 	    	
 	        // Add program to OpenGL environment
 	        GLES20.glUseProgram(mProgram);
