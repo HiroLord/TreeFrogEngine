@@ -1,6 +1,8 @@
 package com.discretesoftworks.framework;
 
 
+import java.io.IOException;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -126,10 +128,18 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
 	}
 	
 	public RenderModel getNewModel(float x, float y, Sprite sprite){
-		RenderModel square = modelPool.newObject();
-		square.resetColor();
-		square.set(x,y,sprite.getWidth(),sprite.getHeight(),sprite);
-		return square;
+		RenderModel model = modelPool.newObject();
+		model.resetColor();
+		model.set(x,y,sprite.getWidth(),sprite.getHeight(),sprite);
+		String filename = "Suzanne.obj";
+		try {
+			model =  ModelLoader.loadOBJ(model, filename, context.getResources().getAssets());
+			System.out.println("Loaded model " + filename + " sucessfully!!!");
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("Loading model " + filename + " failed!");
+		}
+		return model;
 	}
 	
 	@Override

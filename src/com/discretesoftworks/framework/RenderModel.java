@@ -13,7 +13,7 @@ import android.opengl.Matrix;
 public class RenderModel extends GriddedObject{
 
 	//Added for Textures
-	private final FloatBuffer mTextureCoordinates;
+	private FloatBuffer mTextureCoordinates;
 	private int mTextureUniformHandle;
 	private int mTextureCoordinateHandle;
 	private final int mTextureCoordinateDataSize = 2;
@@ -50,8 +50,8 @@ public class RenderModel extends GriddedObject{
         "}";
 
     private FloatBuffer vertexBuffer;
-    private final ShortBuffer drawListBuffer;
-    private final int mProgram;
+    private ShortBuffer drawListBuffer;
+    private int mProgram;
     private int mPositionHandle;
     private int mColorHandle;
     private int mMVPMatrixHandle;
@@ -62,7 +62,7 @@ public class RenderModel extends GriddedObject{
     //private PointF topLeft = new PointF(0,0);
     private float[] mModelMatrix = new float[16];
     private float[] mvpMatrix = new float[16];
-    private float[] squareCoords = { -0.5f,  0.5f, 0f,
+    private float[] coords; /*= { -0.5f,  0.5f, 0f,
             						 -0.5f, -0.5f, 0f,
             						  0.5f, -0.5f, 0f,
             						  0.5f,  0.5f, 0f }; /*,
@@ -71,7 +71,7 @@ public class RenderModel extends GriddedObject{
             						 -0.5f,  0.5f, 1f, 
             						 -0.5f, -0.5f, 1f} ; */
 
-    private final short[] drawOrder = { 0, 1, 2, 0, 2, 3 }; /*, 2, 3, 4, 4, 5, 2, 5, 4, 6, 5, 7, 6,
+    private short[] drawOrder;/* = { 0, 1, 2, 0, 2, 3 }; /*, 2, 3, 4, 4, 5, 2, 5, 4, 6, 5, 7, 6,
     									7, 1, 2, 2, 5, 7, 0, 1, 7, 7, 6, 0}; // order to draw vertices */
 
     private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex
@@ -98,22 +98,69 @@ public class RenderModel extends GriddedObject{
     private float dir;
     private float newDir;
     
+    public RenderModel(float[] coords, short[] indicies) {
+    	super(0,0,0,1,1);
+    	
+    	hudElement = false;
+    	visible = false;
+
+    	GameRenderer.s_instance.setSurfaceCreated(false);
+        
+        //Load the texture
+        mySprite = null;
+        imageSingle = 0f;
+        imageSpeed = 1f;
+        mTextureDataHandle = 0;
+        
+        set = false;
+        newDir = dir = 0f;
+        
+        GameRenderer.s_instance.setSurfaceCreated(true);
+        
+        setupModel(coords, indicies);
+    }
     public RenderModel() {
     	super(0,0,0,1,1);
     	
     	hudElement = false;
     	visible = false;
-    	
-    	
+
     	GameRenderer.s_instance.setSurfaceCreated(false);
-    	
+        
+        //Load the texture
+        mySprite = null;
+        imageSingle = 0f;
+        imageSpeed = 1f;
+        mTextureDataHandle = 0;
+        
+        set = false;
+        newDir = dir = 0f;
+        
+        GameRenderer.s_instance.setSurfaceCreated(true);
+        
+        float[] squareCoords = { -0.5f,  0.5f, 0f,
+				 -0.5f, -0.5f, 0f,
+				  0.5f, -0.5f, 0f,
+				  0.5f,  0.5f, 0f, //cut here
+				  0.5f,  0.5f, 1f,
+				  0.5f, -0.5f, 1f,
+				 -0.5f,  0.5f, 1f, 
+				 -0.5f, -0.5f, 1f} ;
+        short[] squareDrawOrder = { 0, 1, 2, 0, 2, 3, 2, 3, 4, 4, 5, 2, 5, 4, 6, 5, 7, 6,
+				7, 1, 2, 2, 5, 7, 0, 1, 7, 7, 6, 0};
+        setupModel(squareCoords, squareDrawOrder);
+    }
+    
+    private void setupModel(float[] verts, short[] indicies) {
+    	coords = verts;
+    	drawOrder = indicies;
     	// initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
         // (# of coordinate values * 4 bytes per float)
-                squareCoords.length * 4);
+                coords.length * 4);
         bb.order(ByteOrder.nativeOrder());
         vertexBuffer = bb.asFloatBuffer();
-        setSize(squareCoords);
+        setSize(coords);
         
         
         // S, T (or X, Y)
@@ -148,22 +195,11 @@ public class RenderModel extends GriddedObject{
         GLES20.glBindAttribLocation(mProgram, 0, "a_TexCoordinate");
         
         GLES20.glLinkProgram(mProgram);                  // create OpenGL program executables
-        
-        //Load the texture
-        mySprite = null;
-        imageSingle = 0f;
-        imageSpeed = 1f;
-        mTextureDataHandle = 0;
-        
-        set = false;
-        newDir = dir = 0f;
-        
-        GameRenderer.s_instance.setSurfaceCreated(true);
     }
     
     public void new3DModel(float[] m){
-    	this.squareCoords = m;
-    	setSize(this.squareCoords);
+    	this.coords = m;
+    	setSize(this.coords);
     }
     
     public void remakeModelMatrix(){
