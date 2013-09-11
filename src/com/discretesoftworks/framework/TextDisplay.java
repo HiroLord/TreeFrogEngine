@@ -21,7 +21,7 @@ public class TextDisplay extends GameObject implements TextHolder{
 		hudElement = false;
 		displayText = new RenderModel[this.length];
 		for (int i = 0; i < this.length; i++){
-			displayText[i]  = GameRenderer.s_instance.getNewModel(getX(),getY(),Assets.emptySprite);
+			displayText[i]  = GameRenderer.s_instance.getNewModel(getX(),getY(),1,1,Assets.emptySprite);
 			displayText[i].setVisible(false);
 		}
 	}
@@ -30,7 +30,7 @@ public class TextDisplay extends GameObject implements TextHolder{
 		this.length = length;
 		displayText = new RenderModel[this.length];
 		for (int i = 0; i < this.length; i++){
-			displayText[i]  = GameRenderer.s_instance.getNewModel(getX(),getY(),Assets.emptySprite);
+			displayText[i]  = GameRenderer.s_instance.getNewModel(getX(),getY(),1,1,Assets.emptySprite);
 			displayText[i].setVisible(false);
 		}
 		System.gc();
@@ -159,9 +159,9 @@ public class TextDisplay extends GameObject implements TextHolder{
 	}
 	
 	@Override
-	public void draw(float[] vpMatrix, float centerX, float centerY, float centerZ){
+	public void draw(float[] vpMatrix){
 		for (int i = 0; i < displayText.length; i++){
-			displayText[i].draw(vpMatrix, centerX, centerY, centerZ);
+			displayText[i].draw(vpMatrix);
 		}
 	}
 	

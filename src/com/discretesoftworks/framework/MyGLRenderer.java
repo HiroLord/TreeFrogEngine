@@ -28,10 +28,6 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
     private final float[] mVMatrix = new float[16];
     //private final float[] mRotationMatrix = new float[16];
 	
-	
-	private float eX, eY; // Center x and y
-	private float eZ;	// Center z
-	
 	private boolean surfaceCreated;
 	
 	private long startTime;
@@ -53,8 +49,6 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
 	
 	public MyGLRenderer(AndroidGame game, final float scale){
 		s_instance = this;
-		eX = 0;
-		eY = 0;
 		context = (Context)game;
 		setGame(game);
 		surfaceCreated = false;
@@ -127,10 +121,10 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
 		surfaceCreated = s;
 	}
 	
-	public RenderModel getNewModel(float x, float y, Sprite sprite){
+	public RenderModel getNewModel(float x, float y, float width, float height, Sprite sprite){
 		RenderModel model = modelPool.newObject();
 		model.resetColor();
-		model.set(x,y,sprite.getWidth(),sprite.getHeight(),sprite);
+		model.set(x,y,width,height,sprite);
 		String filename = "Suzanne.obj";
 		try {
 			model =  ModelLoader.loadOBJ(model, filename, context.getResources().getAssets());
@@ -173,14 +167,12 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
         		v.getX(), v.getY(), v.getZ(),	// Eye
         		v.getCenterX(), v.getCenterY(), v.getCenterZ(),	// Center
         		0.0f, 0.0f, 1.0f);	// Up
-        
-        //Matrix.rotateM(mVMatrix, 0, -45.0f, 1.0f, 0.0f, 0.0f);
    
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mVPMatrix, 0, mProjMatrix, 0, mVMatrix, 0);
         
         for (int i = 0; i < s_instance.renderObjects.getCompiledData().size(); i++)
-        	((GameObject)s_instance.renderObjects.getCompiledData().get(i)).draw(mVPMatrix, eX, eY, eZ);
+        	((GameObject)s_instance.renderObjects.getCompiledData().get(i)).draw(mVPMatrix);
         
         workFrameRate(deltaTime);
     }
@@ -205,9 +197,6 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
         setScreenHeight(h);
         
         float ratio = (float) w / h;
-        
-        eX = w/2;
-        eY = h/2;
 
 //		Matrix.frustumM(mProjMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
 //		Matrix.orthoM(mProjMatrix, 0, -ratio, ratio, -1, 1, 3, 7);

@@ -30,7 +30,7 @@ public abstract class GameObject extends GriddedObject{
 	}
 	
 	public void init(){
-		myModel = GameRenderer.s_instance.getNewModel(getX(),getY(),sprite);
+		myModel = GameRenderer.s_instance.getNewModel(getX(),getY(),getWidth(),getHeight(),sprite);
 		setDimensions(getWidth(),getHeight());
 		float w = getWidth()/2f;
 		float h = getHeight()/2f;
@@ -177,9 +177,9 @@ public abstract class GameObject extends GriddedObject{
 	}
 	
 	//Recommended override and super call
-	public void draw(float[] vpMatrix, float centerX, float centerY, float centerZ){
+	public void draw(float[] vpMatrix){
 		if (init)
-			myModel.draw(vpMatrix, centerX, centerY, centerZ);
+			myModel.draw(vpMatrix);
 		else
 			init();
 	}

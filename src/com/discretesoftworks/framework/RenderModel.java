@@ -139,15 +139,15 @@ public class RenderModel extends GriddedObject{
         GameRenderer.s_instance.setSurfaceCreated(true);
         
         float[] squareCoords = { -0.5f,  0.5f, 0f,
-				 -0.5f, -0.5f, 0f,
-				  0.5f, -0.5f, 0f,
-				  0.5f,  0.5f, 0f, //cut here
-				  0.5f,  0.5f, 1f,
-				  0.5f, -0.5f, 1f,
-				 -0.5f,  0.5f, 1f, 
-				 -0.5f, -0.5f, 1f} ;
-        short[] squareDrawOrder = { 0, 1, 2, 0, 2, 3, 2, 3, 4, 4, 5, 2, 5, 4, 6, 5, 7, 6,
-				7, 1, 2, 2, 5, 7, 0, 1, 7, 7, 6, 0};
+								 -0.5f, -0.5f, 0f,
+								  0.5f, -0.5f, 0f,
+								  0.5f,  0.5f, 0f }; /*, //cut here
+								  0.5f,  0.5f, 1f,
+								  0.5f, -0.5f, 1f,
+								 -0.5f,  0.5f, 1f, 
+								 -0.5f, -0.5f, 1f} ; */
+        short[] squareDrawOrder = { 0, 1, 2, 0, 2, 3 }; /*, 2, 3, 4, 4, 5, 2, 5, 4, 6, 5, 7, 6,
+				7, 1, 2, 2, 5, 7, 0, 1, 7, 7, 6, 0}; */
         setupModel(squareCoords, squareDrawOrder);
     }
     
@@ -279,6 +279,14 @@ public class RenderModel extends GriddedObject{
     
     public void setHudElement(boolean h){
     	this.hudElement = h;
+    	if (h)
+    		setScaleX(9f/16f);
+    	else
+    		setScaleX(1f);
+    }
+    
+    public void setScaleX(float sx){
+    	scale[0] = sx;
     }
     
     public boolean getHudElement(){
@@ -311,7 +319,7 @@ public class RenderModel extends GriddedObject{
     	imageSpeed = speed;
     }
     
-    public void draw(float[] vpMatrix, float centerX, float centerY, float centerZ) {
+    public void draw(float[] vpMatrix) {
     	//int width = GameRenderer.s_instance.getScreenWidth()/2;
     	//int height = GameRenderer.s_instance.getScreenHeight()/2;
     	if (set && getVisible() && (getHudElement() || true/* (getRight() >= centerX-width*centerZ/3 && getLeft() <= centerX + width*centerZ/3 && getBottom() >= centerY-height*centerZ/3 && getTop() <= centerY+height*centerZ/3)*/)){
@@ -319,18 +327,18 @@ public class RenderModel extends GriddedObject{
             mTextureDataHandle = mySprite.getSprite(getImageSingle());
 	    	
             //remakeModelMatrix();
-            if (newDir == dir){
+            if (newDir != dir){
+	            if (Math.abs(newDir-dir) < 20)
+	            	setDir(newDir);
+	            else if ((newDir > dir && Math.abs(newDir-dir) < 180) || (newDir < dir && Math.abs(newDir-dir) > 180))
+	            	setDir(dir+10);
+	            else if ((newDir < dir && Math.abs(newDir-dir) < 180) || (newDir > dir && Math.abs(newDir-dir) > 180))
+	            	setDir(dir-10);
             }
-            else if (Math.abs(newDir-dir) < 20)
-            	setDir(newDir);
-            else if ((newDir > dir && Math.abs(newDir-dir) < 180) || (newDir < dir && Math.abs(newDir-dir) > 180))
-            	setDir(dir+10);
-            else if ((newDir < dir && Math.abs(newDir-dir) < 180) || (newDir > dir && Math.abs(newDir-dir) > 180))
-            	setDir(dir-10);
-            if (dir > 180)
-            	dir -= 360;
-            else if (dir < -180)
-            	dir += 360;
+	        if (dir > 180)
+	          	dir -= 360;
+	        else if (dir < -180)
+	           	dir += 360;
             
 	        // Add program to OpenGL environment
 	        GLES20.glUseProgram(mProgram);
@@ -380,8 +388,10 @@ public class RenderModel extends GriddedObject{
 	        mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
 	        MyGLRenderer.checkGlError("glGetUniformLocation");
 	        
-	        //Matrix.multiplyMM(mvpMatrix, 0, mModelMatrix, 0, vpMatrix, 0);
-	        Matrix.multiplyMM(mvpMatrix, 0, vpMatrix, 0, mModelMatrix, 0);
+	        if (!getHudElement())
+	        	Matrix.multiplyMM(mvpMatrix, 0, vpMatrix, 0, mModelMatrix, 0);
+	        else
+	        	mvpMatrix = mModelMatrix;
 	        
 	        // Apply the projection and view transformation
 	        GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
