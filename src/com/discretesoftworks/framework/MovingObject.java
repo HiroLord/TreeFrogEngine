@@ -22,30 +22,38 @@ public class MovingObject extends GameObject{
 	}
 	
 	protected Path optimizePath(Path path){
-		for (int i = 0; i < path.length(); i++){
-			PointF a = path.getPoint(i);
+		int k = 0;
+		PointF a, b;
+		a = new PointF(getX(),getY());
+		int i = 0;
+		while (i < path.length()){
 			for (int j = i+2; j < path.length(); j++){
-				PointF b = path.getPoint(j);
-				if (checkPathCollision(a.x,a.y,b.x,b.y) < 0f)
+				b = path.getPoint(j);
+				if (checkLineCollision(a.x,a.y,b.x,b.y) < 0f){
+					k += 1;
 					path.remove(path.getPoint(j-1));
+					j-=1;
+				}
 			}
+			a = path.getPoint(i++);
 		}
+		System.out.println("Removed "+k+" points.");
 		return path;
 	}
 	
-	protected Path findPath(float endX, float endY, float dDir){
+	protected Path findPath(float endX, float endY, float dDir, int maxTries){
 		Path path = new Path();
+		Path pathR = new Path();
 		
 		//System.out.println("==================== THE LITTLE PATH FINDER THAT COULD ====================");
 		
 		boolean found = false;
 		PointF point = new PointF(getX(),getY());
 		int tries = 0;
-		int maxTries = 100;
 		while (!found && tries < maxTries){
 			tries += 1;
 			//System.out.println("RUN THROUGH - NUMBER "+tries);
-			float dist = checkPathCollision(point.x,point.y,endX,endY);
+			float dist = checkLineCollision(point.x,point.y,endX,endY);
 			if (dist == -1f)
 				found = true;
 			else {
@@ -59,18 +67,18 @@ public class MovingObject extends GameObject{
 				//System.out.println("Attempting to find a new partial path.");
 				int rotationTries = (int)(360 / Math.abs(dDir)) + 1;
 				
-				while ((dist = checkPathCollision(point.x, point.y, ex, ey) + .5f) >= 0f && tries2 < rotationTries){
+				while ((dist = checkLineCollision(point.x, point.y, ex, ey) + .4f) > 0f && tries2 <= rotationTries){
 					tries2 += 1;
 					
 					dir += dDir;
 					ex = point.x + Directional.lengthDirX(dir, dist);
 					ey = point.y + Directional.lengthDirY(dir, dist);
 				}
-				if (tries2 < rotationTries){
+				if (tries2 <= rotationTries){
 					//System.out.println("Found a new path in "+tries2+" tries.");
 				}
 				else {
-					//System.out.println("Failed to find a new path.");
+					System.out.println("Could not find new straight line.");
 					tries = maxTries;
 				}
 				point = new PointF(ex,ey);
@@ -78,13 +86,15 @@ public class MovingObject extends GameObject{
 			}
 		}
 		path.add(new PointF(endX,endY), 0);
-		if (found == false)
+		if (found == false){
+			System.out.println("Could not find path.");
 			path = null;
+		}
 		return path;
 	}
 	
-	protected float checkPathCollision(float startX, float startY, float endX, float endY){
-		float dist = .5f;
+	protected float checkLineCollision(float startX, float startY, float endX, float endY){
+		float dist = .4f;
 		float sx = startX;
 		float sy = startY;
 		float dir = Directional.pointDirection(sx, sy, endX, endY);
@@ -134,33 +144,33 @@ public class MovingObject extends GameObject{
 	
 	public void update(float deltaTime){
 		//moveWithoutCollisions();
-		moveCheckCollisions();
+		moveCheckCollisions(deltaTime);
 		super.update(deltaTime);
 	}
 	
-	public void presetMovements(){
+	public void presetMovements(float deltaTime){
 		if (speed == 0f){
 			setdx(0);
 			setdy(0);
 		}
 		else {
-			dx = Directional.lengthDirX(dir, speed);
-			dy = Directional.lengthDirY(dir, speed);
+			dx = Directional.lengthDirX(dir, speed*deltaTime);
+			dy = Directional.lengthDirY(dir, speed*deltaTime);
 		}
 	}
 	
-	public void moveWithoutCollisions(){
+	public void moveWithoutCollisions(float deltaTime){
 		if (autoMove)
-			presetMovements();
+			presetMovements(deltaTime);
 		
 		changeX(getdx());
 		changeY(getdy());
 		changeZ(getdz());
 	}
 	
-	public void moveCheckCollisions(){
+	public void moveCheckCollisions(float deltaTime){
 		if (autoMove)
-			presetMovements();
+			presetMovements(deltaTime);
 		
 		if (getdz() != 0f){
 			changeZ(getdz());

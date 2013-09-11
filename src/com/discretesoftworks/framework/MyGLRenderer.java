@@ -61,7 +61,12 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
 	
 	@Override
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
-        GLES20.glClearColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3]);
+        setBGColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3]);
+        
+        GLES20.glEnable( GLES20.GL_DEPTH_TEST );
+        GLES20.glDepthFunc( GLES20.GL_LEQUAL );
+        //GLES20.glDepthMask( true );
+        
         surfaceCreated = true;
         
         Log.i(TAG,"Surface Created");
@@ -108,6 +113,7 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
 		bgColor[1] = g;
 		bgColor[2] = b;
 		bgColor[3] = a;
+		GLES20.glClearDepthf(1.0f);
 		GLES20.glClearColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3]);
 	}
 	
@@ -134,7 +140,7 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
     @Override
     public void onDrawFrame(GL10 unused) {
     	
-    	deltaTime = (System.nanoTime() - startTime) / 10000000.000f;
+    	deltaTime = ((System.nanoTime() - startTime) / 10000000.000f)*.606f;
 		startTime = System.nanoTime();
 		
 		if (deltaTime > 5.15){
@@ -146,7 +152,8 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
     	
     	View v = getGame().getController().getView();
     	
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+        //GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
         // Set the camera position (View matrix)
         Matrix.setLookAtM(mVMatrix, 0,
@@ -162,16 +169,16 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
         for (int i = 0; i < s_instance.renderObjects.getCompiledData().size(); i++)
         	((GameObject)s_instance.renderObjects.getCompiledData().get(i)).draw(mVPMatrix, eX, eY, eZ);
         
-        workFrameRate();
+        workFrameRate(deltaTime);
     }
     
-    private void workFrameRate(){
+    private void workFrameRate(float deltaTime){
 		frame += 1;
 		if (System.currentTimeMillis()-startFPSTime > 1000){
 			fps = frame < 60 ? frame : 60;
 			frame = 0;
 			startFPSTime = System.currentTimeMillis();
-			Log.i(context.getString(R.string.FPS),Integer.toString(fps));
+			Log.i(context.getString(R.string.FPS),Integer.toString(fps)+", "+deltaTime);
 		}
 	}
 

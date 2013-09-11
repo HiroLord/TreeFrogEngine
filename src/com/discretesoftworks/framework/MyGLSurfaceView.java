@@ -22,11 +22,13 @@ public class MyGLSurfaceView extends GLSurfaceView {
     public void init(Context context, float scale){
     	// OpenGL ES 2.0
         setEGLContextClientVersion(2);
+        setEGLConfigChooser(8, 8, 8, 8, 16, 0);
 
         setFocusable(true);
         setFocusableInTouchMode(true);
         
         setRenderer(new MyGLRenderer(AndroidGame.s_instance, scale));
+        
 
         // ~60 renders per second
         setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);

@@ -10,7 +10,7 @@ import com.discretesoftworks.networking.NetworkGameController;
 
 public abstract class OuyaGameController extends NetworkGameController{
 
-	public static final float deadzone = .25f;
+	public static final float deadzone = .28f;
 	
 	private static PointF[] stickValues = { new PointF(0,0),
 											new PointF(0,0),

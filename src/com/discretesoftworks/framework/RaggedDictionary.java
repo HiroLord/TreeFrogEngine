@@ -31,7 +31,7 @@ public class RaggedDictionary<T,E>{
 			amount += 1;
 			data[k] = new Pair<T, ArrayList<E>>(key, new ArrayList<E>());
 		}
-		data[k].b.add(value);
+		data[k].b.add(0,value);
 		compileData();
 	}
 	

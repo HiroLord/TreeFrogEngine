@@ -15,7 +15,7 @@ public abstract class GameObject extends GriddedObject{
 	
 	private boolean init;
 	
-	private boolean needUpdate = false;
+	private boolean needUpdate = true;
 	
 	public GameObject(float x, float y, float z, float width, float height, Sprite sprite){
 		super(x,y,z,width,height);

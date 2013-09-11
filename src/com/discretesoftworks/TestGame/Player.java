@@ -99,7 +99,7 @@ public class Player extends MovingObject{
 			setdy(.1f);
 		}
 		
-		moveCheckCollisions();
+		moveCheckCollisions(deltaTime);
 		
 		super.update(deltaTime);
 	}
