@@ -95,6 +95,9 @@ public class RenderModel extends GriddedObject{
     private boolean visible;
     private boolean set;
     
+    private float dir;
+    private float newDir;
+    
     public RenderModel() {
     	super(0,0,0,1,1);
     	
@@ -153,6 +156,7 @@ public class RenderModel extends GriddedObject{
         mTextureDataHandle = 0;
         
         set = false;
+        newDir = dir = 0f;
         
         GameRenderer.s_instance.setSurfaceCreated(true);
     }
@@ -166,6 +170,7 @@ public class RenderModel extends GriddedObject{
     	Matrix.setIdentityM(mModelMatrix, 0);
     	Matrix.scaleM(mModelMatrix, 0, scale[0], scale[1], scale[2]);
     	Matrix.translateM(mModelMatrix, 0, getX(), getY(), getZ());
+    	Matrix.rotateM(mModelMatrix, 0, dir, 0.0f, 0.0f, 1.0f);
     }
     
     public void set(float x, float y, float width, float height, Sprite mySprite){
@@ -177,6 +182,15 @@ public class RenderModel extends GriddedObject{
         mTextureDataHandle = mySprite.getSprite(getImageSingle());
         set = true;
         visible = true;
+    }
+    
+    public void setDir(float dir){
+    	this.dir = dir;
+    	remakeModelMatrix();
+    }
+    
+    public void setNewDir(float newDir){
+    	this.newDir = newDir;
     }
     
     public void free(){
@@ -269,6 +283,18 @@ public class RenderModel extends GriddedObject{
             mTextureDataHandle = mySprite.getSprite(getImageSingle());
 	    	
             //remakeModelMatrix();
+            if (newDir == dir){
+            }
+            else if (Math.abs(newDir-dir) < 20)
+            	setDir(newDir);
+            else if ((newDir > dir && Math.abs(newDir-dir) < 180) || (newDir < dir && Math.abs(newDir-dir) > 180))
+            	setDir(dir+10);
+            else if ((newDir < dir && Math.abs(newDir-dir) < 180) || (newDir > dir && Math.abs(newDir-dir) > 180))
+            	setDir(dir-10);
+            if (dir > 180)
+            	dir -= 360;
+            else if (dir < -180)
+            	dir += 360;
             
 	        // Add program to OpenGL environment
 	        GLES20.glUseProgram(mProgram);

@@ -43,6 +43,10 @@ public abstract class GameObject extends GriddedObject{
 		init = true;
 	}
 	
+	public void setDir(float dir){
+		myModel.setNewDir(dir);
+	}
+	
 	@Override
 	public void setDepth(int depth){
 		if (depth != getDepth())
