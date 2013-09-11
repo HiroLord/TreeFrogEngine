@@ -42,55 +42,63 @@ public class MovingObject extends GameObject{
 	}
 	
 	protected Path findPath(float endX, float endY, float dDir, int maxTries){
-		Path path = new Path();
+		Path pathL = new Path();
 		Path pathR = new Path();
+		Path[] paths = {pathL, pathR};
 		
 		//System.out.println("==================== THE LITTLE PATH FINDER THAT COULD ====================");
 		
-		boolean found = false;
-		PointF point = new PointF(getX(),getY());
+		int found = -1;
+		PointF pointL = new PointF(getX(),getY());
+		PointF pointR = new PointF(getX(),getY());
+		PointF[] points = {pointL, pointR};
 		int tries = 0;
-		while (!found && tries < maxTries){
+		while (found == -1 && tries < maxTries && paths[0] != null && paths[1] != null){
 			tries += 1;
 			//System.out.println("RUN THROUGH - NUMBER "+tries);
-			float dist = checkLineCollision(point.x,point.y,endX,endY);
-			if (dist == -1f)
-				found = true;
-			else {
-				//System.out.println("Distance: "+dist);
-				
-				float dir = Directional.pointDirection(point.x, point.y, endX, endY) + dDir;
-				float ex = point.x + Directional.lengthDirX(dir, dist);
-				float ey = point.y + Directional.lengthDirY(dir, dist);
-				
-				int tries2 = 1;
-				//System.out.println("Attempting to find a new partial path.");
-				int rotationTries = (int)(360 / Math.abs(dDir)) + 1;
-				
-				while ((dist = checkLineCollision(point.x, point.y, ex, ey) + .4f) > 0f && tries2 <= rotationTries){
-					tries2 += 1;
+			for (int i = 0; i < 2; i++) {
+				float dist = checkLineCollision(points[i].x,points[i].y,endX,endY);
+				if (dist == -1f)
+					found = i;
+				else if (paths[i] != null){
+					//System.out.println("Distance: "+dist);
 					
-					dir += dDir;
-					ex = point.x + Directional.lengthDirX(dir, dist);
-					ey = point.y + Directional.lengthDirY(dir, dist);
+					float dir = Directional.pointDirection(points[i].x, points[i].y, endX, endY) + dDir;
+					float ex = points[i].x + Directional.lengthDirX(dir, dist);
+					float ey = points[i].y + Directional.lengthDirY(dir, dist);
+					
+					int tries2 = 1;
+					//System.out.println("Attempting to find a new partial path.");
+					int rotationTries = (int)(360 / Math.abs(dDir)) + 1;
+					
+					while ((dist = checkLineCollision(points[i].x, points[i].y, ex, ey) + .4f) > 0f && tries2 <= rotationTries){
+						tries2 += 1;
+						
+						dir += dDir * (i == 0 ? -1 : 1);
+						ex = points[i].x + Directional.lengthDirX(dir, dist);
+						ey = points[i].y + Directional.lengthDirY(dir, dist);
+					}
+					if (tries2 <= rotationTries){
+						points[i] = new PointF(ex,ey);
+						paths[i].add(points[i], dist);
+					}
+					else {
+						System.out.println("Could not find new straight line.");
+						paths[i] = null;
+					}
 				}
-				if (tries2 <= rotationTries){
-					//System.out.println("Found a new path in "+tries2+" tries.");
-				}
-				else {
-					System.out.println("Could not find new straight line.");
-					tries = maxTries;
-				}
-				point = new PointF(ex,ey);
-				path.add(point, dist);
 			}
 		}
-		path.add(new PointF(endX,endY), 0);
-		if (found == false){
-			System.out.println("Could not find path.");
-			path = null;
+		for (int i = 0; i < 2; i++){
+			if (paths[i] != null)
+				paths[i].add(new PointF(endX,endY), 0);
 		}
-		return path;
+		if (found == -1){
+			System.out.println("Could not find path.");
+			return null;
+		}
+		System.out.println("Returning path "+found);
+		return paths[found];
 	}
 	
 	protected float checkLineCollision(float startX, float startY, float endX, float endY){

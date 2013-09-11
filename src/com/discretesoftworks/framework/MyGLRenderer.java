@@ -140,10 +140,13 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
     @Override
     public void onDrawFrame(GL10 unused) {
     	
-    	deltaTime = ((System.nanoTime() - startTime) / 10000000.000f)*.606f;
+    	deltaTime = ((System.nanoTime() - startTime) / 10000000.000f)*.6f;
+    	
 		startTime = System.nanoTime();
 		
-		if (deltaTime > 5.15){
+		if (deltaTime < 1f)
+    		deltaTime = 1f;
+		else if (deltaTime > 5.15){
 			deltaTime = (float)5.15;
 		}
     	

@@ -65,13 +65,13 @@ public class RenderModel extends GriddedObject{
     private float[] squareCoords = { -0.5f,  0.5f, 0f,
             						 -0.5f, -0.5f, 0f,
             						  0.5f, -0.5f, 0f,
-            						  0.5f,  0.5f, 0f,
+            						  0.5f,  0.5f, 0f }; /*,
             						  0.5f,  0.5f, 1f,
             						  0.5f, -0.5f, 1f,
             						 -0.5f,  0.5f, 1f, 
-            						 -0.5f, -0.5f, 1f} ;
+            						 -0.5f, -0.5f, 1f} ; */
 
-    private final short[] drawOrder = { 0, 1, 2, 0, 2, 3, 2, 3, 4, 4, 5, 2, 5, 4, 6, 5, 7, 6,
+    private final short[] drawOrder = { 0, 1, 2, 0, 2, 3 }; /*, 2, 3, 4, 4, 5, 2, 5, 4, 6, 5, 7, 6,
     									7, 1, 2, 2, 5, 7, 0, 1, 7, 7, 6, 0}; // order to draw vertices */
 
     private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex
