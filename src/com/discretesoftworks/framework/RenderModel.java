@@ -47,6 +47,7 @@ public class RenderModel extends GriddedObject{
         "void main() {" +
         //"  gl_FragColor = vColor;" +
         "gl_FragColor = (vColor * texture2D(u_Texture, v_TexCoordinate));" +
+        //"    gl_FragColor = vColor * vec4(v_TexCoordinate.x, v_TexCoordinate.y, 0, 1);"+
         "}";
 
     private FloatBuffer vertexBuffer;
@@ -76,10 +77,7 @@ public class RenderModel extends GriddedObject{
 
     private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex
     
-    private float[] mTextureCoordinateData = {	0.0f,  0.0f,
-									        	0.0f,  1.0f,
-									            1.0f,  1.0f,
-									            1.0f,  0.0f };
+    private float[] texCoords;
 
     // Set color with red, green, blue and alpha (opacity) values
     float color[] = { .75f, .75f, .75f, 1.0f };
@@ -98,7 +96,7 @@ public class RenderModel extends GriddedObject{
     private float dir;
     private float newDir;
     
-    public RenderModel(float[] coords, short[] indicies) {
+    public RenderModel(float[] coords, float[] textureCoords, short[] indicies) {
     	super(0,0,0,1,1);
     	
     	hudElement = false;
@@ -117,7 +115,7 @@ public class RenderModel extends GriddedObject{
         
         GameRenderer.s_instance.setSurfaceCreated(true);
         
-        setupModel(coords, indicies);
+        //setupModel(coords, textureCoords, indicies);
     }
     public RenderModel() {
     	super(0,0,0,1,1);
@@ -146,14 +144,21 @@ public class RenderModel extends GriddedObject{
 								  0.5f, -0.5f, 1f,
 								 -0.5f,  0.5f, 1f, 
 								 -0.5f, -0.5f, 1f} ; */
+        float[] textureCoords = {	0.0f,  0.0f,
+	        	0.0f,  1.0f,
+	            1.0f,  1.0f,
+	            1.0f,  0.0f };
         short[] squareDrawOrder = { 0, 1, 2, 0, 2, 3 }; /*, 2, 3, 4, 4, 5, 2, 5, 4, 6, 5, 7, 6,
 				7, 1, 2, 2, 5, 7, 0, 1, 7, 7, 6, 0}; */
-        setupModel(squareCoords, squareDrawOrder);
+        //setupModel(squareCoords, textureCoords, squareDrawOrder);
     }
     
-    private void setupModel(float[] verts, short[] indicies) {
+    public void setupModel(float[] verts, float[] textureCoords, short[] indicies) {
     	coords = verts;
+    	texCoords = textureCoords;
+    	System.out.println(texCoords);
     	drawOrder = indicies;
+    	
     	// initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
         // (# of coordinate values * 4 bytes per float)
@@ -169,8 +174,8 @@ public class RenderModel extends GriddedObject{
         // OpenGL has a Y axis pointing upward, we adjust for that here by flipping the Y axis.
         // What's more is that the texture coordinates are the same for every face.
         
-        mTextureCoordinates = ByteBuffer.allocateDirect(mTextureCoordinateData.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
-        mTextureCoordinates.put(mTextureCoordinateData).position(0);
+        mTextureCoordinates = ByteBuffer.allocateDirect(texCoords.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
+        mTextureCoordinates.put(texCoords).position(0);
         
         // initialize byte buffer for the draw list
         ByteBuffer dlb = ByteBuffer.allocateDirect(
@@ -197,10 +202,10 @@ public class RenderModel extends GriddedObject{
         GLES20.glLinkProgram(mProgram);                  // create OpenGL program executables
     }
     
-    public void new3DModel(float[] m){
-    	this.coords = m;
-    	setSize(this.coords);
-    }
+//    public void new3DModel(float[] m){
+////    	this.coords = m;
+////    	setSize(this.coords);
+//    }
     
     public void remakeModelMatrix(){
     	Matrix.setIdentityM(mModelMatrix, 0);
@@ -262,15 +267,15 @@ public class RenderModel extends GriddedObject{
     }
     
     public void scaleSprite(float widthStart, float widthEnd, float heightStart, float heightEnd){
-    	mTextureCoordinateData[0] = widthStart;
-    	mTextureCoordinateData[0] = heightEnd;
-    	mTextureCoordinateData[0] = widthStart;
-    	mTextureCoordinateData[0] = heightStart;
-    	mTextureCoordinateData[0] = widthEnd;
-    	mTextureCoordinateData[0] = heightStart;
-    	mTextureCoordinateData[0] = widthEnd;
-    	mTextureCoordinateData[0] = heightEnd;
-    	mTextureCoordinates.put(mTextureCoordinateData).position(0);
+    	texCoords[0] = widthStart;
+    	texCoords[0] = heightEnd;
+    	texCoords[0] = widthStart;
+    	texCoords[0] = heightStart;
+    	texCoords[0] = widthEnd;
+    	texCoords[0] = heightStart;
+    	texCoords[0] = widthEnd;
+    	texCoords[0] = heightEnd;
+    	mTextureCoordinates.put(texCoords).position(0);
     }
     
     public void setSize(float[] squareCoords){

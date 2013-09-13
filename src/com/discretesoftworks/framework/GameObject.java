@@ -38,7 +38,7 @@ public abstract class GameObject extends GriddedObject{
 				 				-w, -h, 0f,
 				 				 w, -h, 0f,
 				 				 w,  h, 0f } ;
-		getModel().new3DModel(squareCoords);
+		//getModel().new3DModel(squareCoords);
 		sprite.setMask(getWidth(),getHeight());
 		init = true;
 	}

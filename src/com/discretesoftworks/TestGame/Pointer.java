@@ -13,7 +13,7 @@ public class Pointer extends GameObject{
 				 -0.5f, -0f, 0f,
 				  0.5f, -0f, 0f,
 				  0.5f,  0f, 1f } ;
-		getModel().new3DModel(squareCoords);
+		//getModel().new3DModel(squareCoords);
 	}
 	
 	private void grabControllerInfo(OuyaController c){

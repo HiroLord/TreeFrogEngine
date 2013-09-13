@@ -121,11 +121,33 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
 		surfaceCreated = s;
 	}
 	
+//	public RenderModel getNewModel(float x, float y, float width, float height, Sprite sprite){
+//		RenderModel model = modelPool.newObject();
+//		model.resetColor();
+//		model.set(x,y,width,height,sprite);
+//		return model;
+//	}
+	
 	public RenderModel getNewModel(float x, float y, float width, float height, Sprite sprite){
 		RenderModel model = modelPool.newObject();
 		model.resetColor();
 		model.set(x,y,width,height,sprite);
-		String filename = "Suzanne.obj";
+		String filename = /*"Cube.obj";*/"Suzanne.obj";
+		try {
+			model =  ModelLoader.loadOBJ(model, filename, context.getResources().getAssets());
+			System.out.println("Loaded model " + filename + " sucessfully!!!");
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("Loading model " + filename + " failed!");
+		}
+		return model;
+	}
+	
+	public RenderModel getNewModel(float x, float y, float width, float height, Sprite sprite, String filename){
+		RenderModel model = modelPool.newObject();
+		model.resetColor();
+		model.set(x,y,width,height,sprite);
+		//String filename = "Suzanne.obj";
 		try {
 			model =  ModelLoader.loadOBJ(model, filename, context.getResources().getAssets());
 			System.out.println("Loaded model " + filename + " sucessfully!!!");
@@ -174,7 +196,7 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
         for (int i = 0; i < s_instance.renderObjects.getCompiledData().size(); i++)
         	((GameObject)s_instance.renderObjects.getCompiledData().get(i)).draw(mVPMatrix);
         
-        workFrameRate(deltaTime);
+        //workFrameRate(deltaTime);
     }
     
     private void workFrameRate(float deltaTime){
