@@ -44,7 +44,7 @@ public abstract class Directional {
 	public static boolean checkCollision(GriddedObject a, GriddedObject b){
 		int xdist = Math.abs((int)(b.getX() - a.getX()));
 		int ydist = Math.abs((int)(b.getY() - a.getY()));
-		if ((xdist < a.getWidth()/2+b.getWidth()/2) && (ydist < a.getHeight()/2+b.getHeight()/2))
+		if ((xdist < a.getWidth()/2+b.getWidth()/2) && (ydist < a.getLength()/2+b.getLength()/2))
 			return true;
 		return false;
 	}

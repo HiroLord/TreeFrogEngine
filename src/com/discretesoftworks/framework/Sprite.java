@@ -42,7 +42,7 @@ public class Sprite extends GriddedObject{
 	
 	public void setManualDimensions(int width, int height){
 		setWidth(width);
-		setHeight(height);
+		setLength(height);
 	}
 	
 	public int getSprite(int imageSingle){

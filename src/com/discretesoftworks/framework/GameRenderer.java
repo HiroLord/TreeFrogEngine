@@ -123,7 +123,7 @@ public abstract class GameRenderer {
     public abstract int getViewHeight();
     public abstract float getViewScale();
 	
-	public abstract RenderModel getNewModel(float x, float y, float width, float height, Sprite sprite);
+	public abstract RenderModel getNewModel(float x, float y, float width, float height, String filename);
 	public abstract void freeModel(RenderModel model);
 	public abstract void setBGColor(float r, float g, float b, float a);
 	public abstract boolean getSurfaceCreated();

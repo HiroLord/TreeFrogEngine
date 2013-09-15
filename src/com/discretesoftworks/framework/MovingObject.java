@@ -13,8 +13,8 @@ public class MovingObject extends GameObject{
 	
 	private boolean autoMove;
 	
-	public MovingObject(float x, float y, float z, float width, float height, Sprite sprite){
-		super(x,y,z,width,height,sprite);
+	public MovingObject(float x, float y, float z, float width, float height, String objectName){
+		super(x,y,z,width,height,objectName);
 		dx = dy = dz = 0f;
 		autoMove = false;
 		speed = 0f;

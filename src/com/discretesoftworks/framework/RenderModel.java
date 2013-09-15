@@ -85,7 +85,7 @@ public class RenderModel extends GriddedObject{
     //float translation[] = {0, 0, 0};
     float scale[] = {1, 1, 1};
     
-    private Sprite mySprite;
+    private Sprite myTextureSprite;
     private float imageSingle;
     private float imageSpeed;
     
@@ -96,61 +96,19 @@ public class RenderModel extends GriddedObject{
     private float dir;
     private float newDir;
     
-    public RenderModel(float[] coords, float[] textureCoords, short[] indicies) {
-    	super(0,0,0,1,1);
-    	
-    	hudElement = false;
-    	visible = false;
-
-    	GameRenderer.s_instance.setSurfaceCreated(false);
-        
-        //Load the texture
-        mySprite = null;
-        imageSingle = 0f;
-        imageSpeed = 1f;
-        mTextureDataHandle = 0;
-        
-        set = false;
-        newDir = dir = 0f;
-        
-        GameRenderer.s_instance.setSurfaceCreated(true);
-        
-        //setupModel(coords, textureCoords, indicies);
-    }
     public RenderModel() {
     	super(0,0,0,1,1);
     	
     	hudElement = false;
     	visible = false;
-
-    	GameRenderer.s_instance.setSurfaceCreated(false);
         
-        //Load the texture
-        mySprite = null;
+        myTextureSprite = null;
         imageSingle = 0f;
         imageSpeed = 1f;
         mTextureDataHandle = 0;
         
         set = false;
         newDir = dir = 0f;
-        
-        GameRenderer.s_instance.setSurfaceCreated(true);
-        
-        float[] squareCoords = { -0.5f,  0.5f, 0f,
-								 -0.5f, -0.5f, 0f,
-								  0.5f, -0.5f, 0f,
-								  0.5f,  0.5f, 0f }; /*, //cut here
-								  0.5f,  0.5f, 1f,
-								  0.5f, -0.5f, 1f,
-								 -0.5f,  0.5f, 1f, 
-								 -0.5f, -0.5f, 1f} ; */
-        float[] textureCoords = {	0.0f,  0.0f,
-	        	0.0f,  1.0f,
-	            1.0f,  1.0f,
-	            1.0f,  0.0f };
-        short[] squareDrawOrder = { 0, 1, 2, 0, 2, 3 }; /*, 2, 3, 4, 4, 5, 2, 5, 4, 6, 5, 7, 6,
-				7, 1, 2, 2, 5, 7, 0, 1, 7, 7, 6, 0}; */
-        //setupModel(squareCoords, textureCoords, squareDrawOrder);
     }
     
     public void setupModel(float[] verts, float[] textureCoords, short[] indicies) {
@@ -214,13 +172,15 @@ public class RenderModel extends GriddedObject{
     	Matrix.rotateM(mModelMatrix, 0, dir, 0.0f, 0.0f, 1.0f);
     }
     
-    public void set(float x, float y, float width, float height, Sprite mySprite){
+    public void set(float x, float y, float width, float height){
     	setCoordinates(x,y);
     	setDimensions(width,height);
-    	this.mySprite = mySprite;
     	imageSingle = 0f;
         imageSpeed = 1f;
-        mTextureDataHandle = mySprite.getSprite(getImageSingle());
+        //mTextureDataHandle = mySprite.getSprite(getImageSingle());
+        setHudElement(false);
+        setDir(0);
+        setNewDir(0);
         set = true;
         visible = true;
     }
@@ -240,12 +200,12 @@ public class RenderModel extends GriddedObject{
     }
     
     public void setSprite(Sprite sprite){
-    	this.mySprite = sprite;
+    	this.myTextureSprite = sprite;
     	imageSingle = 0;
     }
     
     public Sprite getSprite(){
-    	return mySprite;
+    	return myTextureSprite;
     }
     
     public int getImageSingle(){
@@ -257,6 +217,13 @@ public class RenderModel extends GriddedObject{
     	this.color[1] = green;
     	this.color[2] = blue;
     	this.color[3] = alpha;
+    }
+    
+    public void setScale(float sx, float sy, float sz){
+    	scale[0] = sx;
+    	scale[1] = sy;
+    	scale[2] = sz;
+    	remakeModelMatrix();
     }
     
     public void resetColor(){
@@ -308,7 +275,7 @@ public class RenderModel extends GriddedObject{
     
     public void increment(){
     	imageSingle += imageSpeed;
-    	if (imageSingle >= mySprite.getSpriteLength())
+    	if (imageSingle >= myTextureSprite.getSpriteLength())
     		imageSingle = 0;
     }
     
@@ -329,7 +296,7 @@ public class RenderModel extends GriddedObject{
     	//int height = GameRenderer.s_instance.getScreenHeight()/2;
     	if (set && getVisible() && (getHudElement() || true/* (getRight() >= centerX-width*centerZ/3 && getLeft() <= centerX + width*centerZ/3 && getBottom() >= centerY-height*centerZ/3 && getTop() <= centerY+height*centerZ/3)*/)){
     		increment();
-            mTextureDataHandle = mySprite.getSprite(getImageSingle());
+            mTextureDataHandle = myTextureSprite.getSprite(getImageSingle());
 	    	
             //remakeModelMatrix();
             if (newDir != dir){

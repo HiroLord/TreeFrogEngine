@@ -128,32 +128,34 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
 //		return model;
 //	}
 	
-	public RenderModel getNewModel(float x, float y, float width, float height, Sprite sprite){
+	public RenderModel getNewModel(float x, float y, float width, float height, String filename){
 		RenderModel model = modelPool.newObject();
 		model.resetColor();
-		model.set(x,y,width,height,sprite);
-		String filename = /*"Cube.obj";*/"Suzanne.obj";
-		try {
-			model =  ModelLoader.loadOBJ(model, filename, context.getResources().getAssets());
-			System.out.println("Loaded model " + filename + " sucessfully!!!");
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.out.println("Loading model " + filename + " failed!");
-		}
-		return model;
-	}
-	
-	public RenderModel getNewModel(float x, float y, float width, float height, Sprite sprite, String filename){
-		RenderModel model = modelPool.newObject();
-		model.resetColor();
-		model.set(x,y,width,height,sprite);
-		//String filename = "Suzanne.obj";
-		try {
-			model =  ModelLoader.loadOBJ(model, filename, context.getResources().getAssets());
-			System.out.println("Loaded model " + filename + " sucessfully!!!");
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.out.println("Loading model " + filename + " failed!");
+		model.set(x,y,width,height);
+		if (filename != null){
+			try {
+				model =  ModelLoader.loadOBJ(model, filename, context.getResources().getAssets());
+				System.out.println("Loaded model " + filename + " sucessfully!!!");
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.out.println("Loading model " + filename + " failed!");
+			}
+		} else {
+	        float[] squareCoords = { -0.5f,  0.5f, 0f,
+			 -0.5f, -0.5f, 0f,
+			  0.5f, -0.5f, 0f,
+			  0.5f,  0.5f, 0f }; /*, //cut here
+			  0.5f,  0.5f, 1f,
+			  0.5f, -0.5f, 1f,
+			 -0.5f,  0.5f, 1f, 
+			 -0.5f, -0.5f, 1f} ; */
+	        float[] textureCoords = {	0.0f,  0.0f,
+	        		0.0f,  1.0f,
+	        		1.0f,  1.0f,
+	        		1.0f,  0.0f };
+	        short[] squareDrawOrder = { 0, 1, 2, 0, 2, 3 }; /*, 2, 3, 4, 4, 5, 2, 5, 4, 6, 5, 7, 6,
+										7, 1, 2, 2, 5, 7, 0, 1, 7, 7, 6, 0}; */
+	        model.setupModel(squareCoords, textureCoords, squareDrawOrder);
 		}
 		return model;
 	}
@@ -196,7 +198,7 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
         for (int i = 0; i < s_instance.renderObjects.getCompiledData().size(); i++)
         	((GameObject)s_instance.renderObjects.getCompiledData().get(i)).draw(mVPMatrix);
         
-        //workFrameRate(deltaTime);
+        workFrameRate(deltaTime);
     }
     
     private void workFrameRate(float deltaTime){

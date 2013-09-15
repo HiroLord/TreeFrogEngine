@@ -8,12 +8,8 @@ import com.discretesoftworks.framework.GameObject;
 public class Pointer extends GameObject{
 
 	public Pointer(float x, float y, float z){
-		super(x,y,z,1,1,Assets.sprPointer);
-		float squareCoords[] = { -0.5f,  0f, 1f,
-				 -0.5f, -0f, 0f,
-				  0.5f, -0f, 0f,
-				  0.5f,  0f, 1f } ;
-		//getModel().new3DModel(squareCoords);
+		super(x,y,z,1,1,null);
+		getModel().setSprite(Assets.sprPointer);
 	}
 	
 	private void grabControllerInfo(OuyaController c){

@@ -22,7 +22,8 @@ public class Player extends MovingObject{
 	private Random rand;
 	
 	public Player(float x, float y, float z, float width, float height) {
-		super(x, y, z, width, height, Assets.sprGlass);
+		super(x, y, z, width, height, null);
+		getModel().setSprite(Assets.sprPointer);
 		left = false;
 		right = false;
 		jump = false;

@@ -19,7 +19,7 @@ public class ModelLoader {
 		
 		Sprite sprite = null;
 		
-		ArrayList<Float> verticies = new ArrayList<Float>();
+//		ArrayList<Float> verticies = new ArrayList<Float>();
 		ArrayList<Float> positionCoords = new ArrayList<Float>();
 		ArrayList<Float> textureCoords = new ArrayList<Float>();
 		ArrayList<Float> vertexNormals = new ArrayList<Float>();
@@ -104,7 +104,7 @@ public class ModelLoader {
 			texCoords[faces.get(i)*2] = textureCoords.get(facesTex.get(i)*2);
 			texCoords[faces.get(i)*2+1] = textureCoords.get(facesTex.get(i)*2+1);
 		}
-		System.out.println("Here is inside ModelLoader" + texCoords);
+		//System.out.println("Here is inside ModelLoader" + texCoords);
 		object.setupModel(verticiesArray, texCoords, indiciesArray);
 		object.setSprite(sprite);
 		return object;

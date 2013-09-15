@@ -8,7 +8,7 @@ public class GriddedObject {
 
 	private float x, y, z;
 	private int depth;
-	private float width, height;
+	private float width, length, height;
 	
 	
 	public GriddedObject(float x, float y, float z){
@@ -16,13 +16,14 @@ public class GriddedObject {
 	}
 	
 	@SuppressLint("UseValueOf")
-	public GriddedObject(float x, float y, float z, float width, float height){
+	public GriddedObject(float x, float y, float z, float width, float length){
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		this.depth = new Integer(0); // Temporary code
 		setWidth(width);
-		setHeight(height);
+		setLength(length);
+		setHeight(1);
 	}
 	
 	public void setDepth(int depth){
@@ -74,7 +75,7 @@ public class GriddedObject {
 	}
 	
 	public float getTop(){
-		return (y - height/2);
+		return (y - length/2);
 	}
 	
 	public float getRight(){
@@ -82,7 +83,7 @@ public class GriddedObject {
 	}
 	
 	public float getBottom(){
-		return (y + height/2);
+		return (y + length/2);
 	}
 	
 	public void setCorner(float x, float y){
@@ -95,7 +96,7 @@ public class GriddedObject {
 	}
 	
 	public void setTop(float t){
-		y = t + height/2;
+		y = t + length/2;
 	}
 	
 	public void setRight(float r){
@@ -103,12 +104,12 @@ public class GriddedObject {
 	}
 	
 	public void setBottom(float b){
-		y = b - height/2;
+		y = b - length/2;
 	}
 	
 	public void setDimensions(float width, float height){
 		setWidth(width);
-		setHeight(height);
+		setLength(height);
 	}
 	
 	public void setCoordinates(float x, float y){
@@ -120,6 +121,10 @@ public class GriddedObject {
 		this.width = width;
 	}
 	
+	public void setLength(float length){
+		this.length = length;
+	}
+	
 	public void setHeight(float height){
 		this.height = height;
 	}
@@ -128,12 +133,20 @@ public class GriddedObject {
 		setWidth(width+dWidth);
 	}
 	
+	public void changeLength(float dLength){
+		setLength(length+dLength);
+	}
+	
 	public void changeHeight(float dHeight){
 		setHeight(height+dHeight);
 	}
 	
 	public float getWidth(){
 		return width;
+	}
+	
+	public float getLength(){
+		return length;
 	}
 	
 	public float getHeight(){

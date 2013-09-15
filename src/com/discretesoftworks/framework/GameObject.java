@@ -11,16 +11,16 @@ public abstract class GameObject extends GriddedObject{
 	
 	private RenderModel myModel;
 	
-	private Sprite sprite;
+	private String objectName;
 	
 	private boolean init;
 	
 	private boolean needUpdate = true;
 	
-	public GameObject(float x, float y, float z, float width, float height, Sprite sprite){
-		super(x,y,z,width,height);
+	public GameObject(float x, float y, float z, float width, float length, String objectName){
+		super(x,y,z,width,length);
 		this.life = 1;
-		this.sprite = sprite;
+		this.objectName = objectName;
 		depthChanged = false;
 		init = false;
 		myModel = null;
@@ -30,16 +30,8 @@ public abstract class GameObject extends GriddedObject{
 	}
 	
 	public void init(){
-		myModel = GameRenderer.s_instance.getNewModel(getX(),getY(),getWidth(),getHeight(),sprite);
-		setDimensions(getWidth(),getHeight());
-		float w = getWidth()/2f;
-		float h = getHeight()/2f;
-		float squareCoords[] = {-w,  h, 0f,
-				 				-w, -h, 0f,
-				 				 w, -h, 0f,
-				 				 w,  h, 0f } ;
-		//getModel().new3DModel(squareCoords);
-		sprite.setMask(getWidth(),getHeight());
+		myModel = GameRenderer.s_instance.getNewModel(getX(),getY(),getWidth(),getLength(),objectName);
+		setDimensions(getWidth(),getLength());
 		init = true;
 	}
 	
@@ -155,7 +147,7 @@ public abstract class GameObject extends GriddedObject{
 		myModel.setY(getY());
 		myModel.setZ(getZ());
 		myModel.setWidth(getWidth());
-		myModel.setHeight(getHeight());
+		myModel.setLength(getLength());
 		myModel.remakeModelMatrix();
 		needUpdate = false;
 	}

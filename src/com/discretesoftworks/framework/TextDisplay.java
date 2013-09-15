@@ -21,7 +21,7 @@ public class TextDisplay extends GameObject implements TextHolder{
 		hudElement = false;
 		displayText = new RenderModel[this.length];
 		for (int i = 0; i < this.length; i++){
-			displayText[i]  = GameRenderer.s_instance.getNewModel(getX(),getY(),1,1,Assets.emptySprite);
+			displayText[i]  = GameRenderer.s_instance.getNewModel(getX(),getY(),1,1,null);
 			displayText[i].setVisible(false);
 		}
 	}
@@ -30,7 +30,7 @@ public class TextDisplay extends GameObject implements TextHolder{
 		this.length = length;
 		displayText = new RenderModel[this.length];
 		for (int i = 0; i < this.length; i++){
-			displayText[i]  = GameRenderer.s_instance.getNewModel(getX(),getY(),1,1,Assets.emptySprite);
+			displayText[i]  = GameRenderer.s_instance.getNewModel(getX(),getY(),1,1,null);
 			displayText[i].setVisible(false);
 		}
 		System.gc();
@@ -68,10 +68,10 @@ public class TextDisplay extends GameObject implements TextHolder{
 			else {
 				displayText[i].setSprite(myFont.getLetter(text.charAt(i)));
 				float w = displayText[i].getSprite().getWidth();
-				float h = displayText[i].getSprite().getHeight();
+				float h = displayText[i].getSprite().getLength();
 				float scale = (float)size/h;
 				displayText[i].setWidth((int)(w*scale));
-				displayText[i].setHeight((int)(h*scale));
+				displayText[i].setLength((int)(h*scale));
 				width += displayText[i].getSprite().getMaskWidth()*scale;
 			}
 		}
@@ -103,10 +103,10 @@ public class TextDisplay extends GameObject implements TextHolder{
 			else  {
 				displayText[i].setSprite(myFont.getLetter(text.charAt(i)));
 				float w = displayText[i].getSprite().getWidth();
-				float h = displayText[i].getSprite().getHeight();
+				float h = displayText[i].getSprite().getLength();
 				float scale = (float)size/h;
 				displayText[i].setWidth((int)(w*scale));
-				displayText[i].setHeight((int)(h*scale));
+				displayText[i].setLength((int)(h*scale));
 				displayText[i].setLeft(x);
 				displayText[i].setTop(y);
 				displayText[i].setVisible(true);
