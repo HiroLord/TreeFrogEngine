@@ -172,6 +172,21 @@ public class RenderModel extends GriddedObject{
     	Matrix.rotateM(mModelMatrix, 0, dir, 0.0f, 0.0f, 1.0f);
     }
     
+    public void createSquare(float width, float height){
+    	width /= 2f;
+    	height /= 2f;
+    	float[] squareCoords = { -width,  height, 0f,
+   			 					 -width, -height, 0f,
+   			 					  width, -height, 0f,
+   			 					  width,  height, 0f };
+    	float[] textureCoords = { 0.0f,  0.0f,
+   	        					  0.0f,  1.0f,
+   	        					  1.0f,  1.0f,
+   	        					  1.0f,  0.0f };
+   	    short[] squareDrawOrder = { 0, 1, 2, 0, 2, 3 };
+   	    setupModel(squareCoords, textureCoords, squareDrawOrder);
+    }
+    
     public void set(float x, float y, float width, float height){
     	setCoordinates(x,y);
     	setDimensions(width,height);
@@ -188,6 +203,10 @@ public class RenderModel extends GriddedObject{
     public void setDir(float dir){
     	this.dir = dir;
     	remakeModelMatrix();
+    }
+    
+    public float getDir(){
+    	return dir;
     }
     
     public void setNewDir(float newDir){

@@ -141,21 +141,7 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
 				System.out.println("Loading model " + filename + " failed!");
 			}
 		} else {
-	        float[] squareCoords = { -0.5f,  0.5f, 0f,
-			 -0.5f, -0.5f, 0f,
-			  0.5f, -0.5f, 0f,
-			  0.5f,  0.5f, 0f }; /*, //cut here
-			  0.5f,  0.5f, 1f,
-			  0.5f, -0.5f, 1f,
-			 -0.5f,  0.5f, 1f, 
-			 -0.5f, -0.5f, 1f} ; */
-	        float[] textureCoords = {	0.0f,  0.0f,
-	        		0.0f,  1.0f,
-	        		1.0f,  1.0f,
-	        		1.0f,  0.0f };
-	        short[] squareDrawOrder = { 0, 1, 2, 0, 2, 3 }; /*, 2, 3, 4, 4, 5, 2, 5, 4, 6, 5, 7, 6,
-										7, 1, 2, 2, 5, 7, 0, 1, 7, 7, 6, 0}; */
-	        model.setupModel(squareCoords, textureCoords, squareDrawOrder);
+	        model.createSquare(1f, 1f);
 		}
 		return model;
 	}

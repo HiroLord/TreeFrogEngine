@@ -8,10 +8,11 @@ public class TextDisplay extends GameObject implements TextHolder{
 	private RenderModel[] displayText;
 	private GameFont myFont;
 	private boolean hudElement;
-	private int size, length;
+	private float size;
+	private int length;
 	private int hAlign;
 	
-	public TextDisplay(float x, float y, float z, GameFont myFont, int length, int size){
+	public TextDisplay(float x, float y, float z, GameFont myFont, int length, float size){
 		super(x,y,z,2,2,null);
 		this.myFont = myFont;
 		this.length = length;
@@ -105,8 +106,9 @@ public class TextDisplay extends GameObject implements TextHolder{
 				float w = displayText[i].getSprite().getWidth();
 				float h = displayText[i].getSprite().getLength();
 				float scale = (float)size/h;
-				displayText[i].setWidth((int)(w*scale));
-				displayText[i].setLength((int)(h*scale));
+				displayText[i].setWidth(w*scale);
+				displayText[i].setLength(h*scale);
+				displayText[i].createSquare(w*scale, h*scale);
 				displayText[i].setLeft(x);
 				displayText[i].setTop(y);
 				displayText[i].setVisible(true);
@@ -143,7 +145,9 @@ public class TextDisplay extends GameObject implements TextHolder{
 	
 	@Override
 	public void update(float deltaTime){
-		
+		for (int i = 0; i < displayText.length; i++){
+			displayText[i].remakeModelMatrix();
+		}
 	}
 	
 	@Override
