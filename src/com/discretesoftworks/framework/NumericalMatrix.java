@@ -3,22 +3,30 @@ package com.discretesoftworks.framework;
 // A numerical matrix.
 public class NumericalMatrix {
 
-	private double[] array;
+	private float[] array;
 	private int cols;
 
 	public NumericalMatrix(final int rows, final int cols) {
 		// Set colums and create a new array
 		this.cols = cols;
-		this.array = new double[rows * cols];
+		this.array = new float[rows * cols];
+	}
+	
+	public float[] getArray(){
+		return array;
+	}
+	
+	public int getIndex(int row, int col){
+		return row*cols + col;
 	}
 
-	public void put(final double value, final int row, final int col)
+	public void put(final float value, final int row, final int col)
 			throws IndexOutOfBoundsException {
 		// Add a new value using row-major
 		array[row*cols + col] = value;
 	}
 
-	public double get(int row, int col) throws IndexOutOfBoundsException {
+	public float get(int row, int col) throws IndexOutOfBoundsException {
 		// Get a value using row-major
 		return array[row*cols + col];
 	}
@@ -65,7 +73,7 @@ public class NumericalMatrix {
 		for (int r = 0; r < getRowDimension(); r++){
 			// For every output column,
 			for (int c = 0; c < rhs.getColumnDimension(); c++){
-				double data = 0;
+				float data = 0;
 				// Grab all the correct data from the two multiplying matricies
 				for (int i = 0; i < getColumnDimension(); i++){
 					// Multiple and add to out putput
