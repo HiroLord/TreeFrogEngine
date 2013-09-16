@@ -8,11 +8,17 @@ public class Terrain extends GameObject{
 	
 	private Random rand;
 	
+	private float stepWidth, stepHeight;
+	
 	public Terrain(float x, float y, float stepWidth, float stepHeight, int width, int height){
-		super(x,y,0,stepWidth*width,stepHeight*height,null);
+		super(x,y,0,width,height,null);
+		getModel().setSprite(Assets.sprWall);
+		this.stepWidth = stepWidth;
+		this.stepHeight = stepHeight;
 		rand = new Random();
-		heightMap = new NumericalMatrix(height, width);
+		heightMap = new NumericalMatrix((int)(height/stepHeight)+1,(int)(width/stepWidth)+1);
 		generateRandomHeightMap();
+		renderHeightMap();
 	}
 	
 	public void generateRandomHeightMap(){
@@ -24,7 +30,15 @@ public class Terrain extends GameObject{
 	}
 	
 	public void renderHeightMap(){
-		float[] verts = heightMap.getArray();
+		int i = 0;
+		float[] verts = new float[heightMap.getRowDimension() * heightMap.getColumnDimension()*3];
+		for (int r = 0; r < heightMap.getRowDimension(); r++){
+			for (int c = 0; c < heightMap.getColumnDimension(); c++){
+				verts[i++] = r * stepWidth;
+				verts[i++] = c * stepHeight;
+				verts[i++] = heightMap.get(r,c);
+			}
+		}
 		float[] textureCoords = new float[4];
 		short[] indicies = new short[(heightMap.getColumnDimension()-1) * (heightMap.getRowDimension()-1) * 6];
 		int j = 0;
@@ -48,6 +62,18 @@ public class Terrain extends GameObject{
 	
 	public float getHeight(int r, int c){
 		return heightMap.get(r, c);
+	}
+	
+	public float getHeight(float x, float y){
+		int rowLeft = (int)Math.floor(x/stepWidth);
+		int rowRight = (int)Math.ceil(x/stepWidth);
+		float percentX = x%stepWidth;
+		//float percentY = y%stepHeight;
+		int colTop = (int)Math.ceil(y/stepHeight);
+		int colBottom = (int)Math.floor(y/stepHeight);
+		float outputx = (heightMap.get(rowLeft, colTop) + heightMap.get(rowRight, colTop))/2f;
+		float outputy = (heightMap.get(rowLeft, colBottom) + heightMap.get(rowRight, colBottom))/2f;
+		return (outputx+outputy)/2f;
 	}
 	
 }
