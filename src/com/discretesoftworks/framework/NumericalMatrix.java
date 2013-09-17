@@ -12,23 +12,19 @@ public class NumericalMatrix {
 		this.array = new float[rows * cols];
 	}
 	
-	public float[] getArray(){
-		return array;
-	}
-	
 	public int getIndex(int row, int col){
-		return row*cols + col;
+		return (cols - 1 - row)*cols + col;
 	}
 
 	public void put(final float value, final int row, final int col)
 			throws IndexOutOfBoundsException {
 		// Add a new value using row-major
-		array[row*cols + col] = value;
+		array[(cols - 1 - row)*cols + col] = value;
 	}
 
 	public float get(int row, int col) throws IndexOutOfBoundsException {
 		// Get a value using row-major
-		return array[row*cols + col];
+		return array[(cols - 1 - row)*cols + col];
 	}
 
 	public NumericalMatrix add(final NumericalMatrix rhs) throws IllegalArgumentException {

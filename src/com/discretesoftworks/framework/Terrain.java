@@ -17,29 +17,44 @@ public class Terrain extends GameObject{
 		this.stepHeight = stepHeight;
 		rand = new Random();
 		heightMap = new NumericalMatrix((int)(height/stepHeight)+1,(int)(width/stepWidth)+1);
-		generateRandomHeightMap();
+		//generateSlopedHeightMap(4f);
+		generateRandomHeightMap(4f);
 		renderHeightMap();
 	}
 	
-	public void generateRandomHeightMap(){
+	public void generateSlopedHeightMap(float endHeight){
+		float h = endHeight;
+		for (int r = 0; r < heightMap.getRowDimension(); r++){
+			h = endHeight;
+			for (int c = 0; c < heightMap.getColumnDimension(); c++){
+				heightMap.put(h, r, c);
+				h -= (stepWidth/(float)getWidth())*(endHeight);
+			}
+		}
+	}
+	
+	public void generateRandomHeightMap(float variance){
 		for (int r = 0; r < heightMap.getRowDimension(); r++){
 			for (int c = 0; c < heightMap.getColumnDimension(); c++){
-				heightMap.put(rand.nextFloat(), r, c);
+				heightMap.put(rand.nextFloat()*variance, r, c);
 			}
 		}
 	}
 	
 	public void renderHeightMap(){
 		int i = 0;
+		int k = 0;
 		float[] verts = new float[heightMap.getRowDimension() * heightMap.getColumnDimension()*3];
+		float[] textureCoords = new float[heightMap.getRowDimension() * heightMap.getColumnDimension()*2];
 		for (int r = 0; r < heightMap.getRowDimension(); r++){
 			for (int c = 0; c < heightMap.getColumnDimension(); c++){
-				verts[i++] = r * stepWidth;
 				verts[i++] = c * stepHeight;
+				verts[i++] = r * stepWidth;
 				verts[i++] = heightMap.get(r,c);
+				textureCoords[k++] = c / ((float)heightMap.getColumnDimension()-1);
+				textureCoords[k++] = (1-(r / ((float)heightMap.getRowDimension()-1)));
 			}
 		}
-		float[] textureCoords = new float[4];
 		short[] indicies = new short[(heightMap.getColumnDimension()-1) * (heightMap.getRowDimension()-1) * 6];
 		int j = 0;
 		for (int r = 0; r < heightMap.getRowDimension()-1; r++){
@@ -65,15 +80,21 @@ public class Terrain extends GameObject{
 	}
 	
 	public float getHeight(float x, float y){
-		int rowLeft = (int)Math.floor(x/stepWidth);
-		int rowRight = (int)Math.ceil(x/stepWidth);
-		float percentX = x%stepWidth;
-		//float percentY = y%stepHeight;
-		int colTop = (int)Math.ceil(y/stepHeight);
-		int colBottom = (int)Math.floor(y/stepHeight);
-		float outputx = (heightMap.get(rowLeft, colTop) + heightMap.get(rowRight, colTop))/2f;
-		float outputy = (heightMap.get(rowLeft, colBottom) + heightMap.get(rowRight, colBottom))/2f;
-		return (outputx+outputy)/2f;
+		if (x < getX() || y < getY() || x >= getX() + getWidth() || y >= getY() + getLength())
+			return 5f;
+		int colLeft = (int)Math.floor(x/stepWidth);
+		int colRight = colLeft + 1;
+		int rowBottom = (int)Math.floor(y/stepHeight);
+		int rowTop = rowBottom + 1;
+		float percentX = (x%stepWidth)/stepWidth;
+		float percentY = (y%stepHeight)/stepHeight;
+		float leftHeight = (heightMap.get(rowBottom, colLeft) + heightMap.get(rowTop, colLeft))/2f;
+		float rightHeight = (heightMap.get(rowBottom, colRight) + heightMap.get(rowTop, colRight))/2f;
+		float topHeight = (heightMap.get(rowTop, colLeft) + heightMap.get(rowTop, colRight))/2f;
+		float bottomHeight = (heightMap.get(rowBottom, colLeft) + heightMap.get(rowBottom, colRight))/2f;
+		float outputx = leftHeight * (1f-percentX) + rightHeight * (percentX);
+		float outputy = bottomHeight * (1f-percentY) + topHeight * (percentY);
+		return (outputx); //+outputy)/2f;
 	}
 	
 }
