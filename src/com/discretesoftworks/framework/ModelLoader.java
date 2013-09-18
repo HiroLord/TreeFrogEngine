@@ -93,20 +93,21 @@ public class ModelLoader {
 					
 			}
 		}
-		float[] verticiesArray = new float[positionCoords.size()];
-		float[] texCoords = new float[positionCoords.size()];
-		short[] indiciesArray = new short[faces.size()];
-		for (int i = 0; i < positionCoords.size(); i++) {
-			verticiesArray[i] = positionCoords.get(i);
+		float[] verticiesArray = new float[(textureCoords.size()/2)*3];
+		float[] texCoords = new float[textureCoords.size()];
+		short[] indiciesArray = new short[facesTex.size()];
+		for (int i = 0; i < textureCoords.size(); i++) {
+			texCoords[i] = textureCoords.get(i);
 		}
-		for (int i = 0; i < faces.size(); i++) {
-			indiciesArray[i] = faces.get(i);
-			texCoords[faces.get(i)*2] = textureCoords.get(facesTex.get(i)*2);
-			texCoords[faces.get(i)*2+1] = textureCoords.get(facesTex.get(i)*2+1);
+		for (int i = 0; i < facesTex.size(); i++) {
+			indiciesArray[i] = facesTex.get(i);
+			verticiesArray[facesTex.get(i)*3] = positionCoords.get(faces.get(i)*3);
+			verticiesArray[facesTex.get(i)*3+1] = positionCoords.get(faces.get(i)*3+1);
+			verticiesArray[facesTex.get(i)*3+2] = positionCoords.get(faces.get(i)*3+2);
 		}
-		//System.out.println("Here is inside ModelLoader" + texCoords);
 		object.setupModel(verticiesArray, texCoords, indiciesArray);
 		object.setSprite(sprite);
+		
 		return object;
 	}
 

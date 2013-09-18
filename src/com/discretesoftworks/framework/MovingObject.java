@@ -154,7 +154,8 @@ public class MovingObject extends GameObject{
 	
 	public void setDir(float dir){
 		this.dir = dir;
-		super.setDir(dir);
+		if (getModel().getSpin())
+			super.setDir(dir);
 	}
 	
 	public float getDir(){
