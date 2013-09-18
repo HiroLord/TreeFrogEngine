@@ -121,4 +121,12 @@ public abstract class OuyaGameController extends NetworkGameController{
 		return dir;
 	}
 	
+	public static float getInvertedStickDirection(OuyaController c, int stick){
+		PointF stickM = getStickValues(c,stick);
+		float axisX = stickM.x;
+		float axisY = -stickM.y;
+		float dir = (float) Math.toDegrees( Math.atan2(-axisX, axisY) );
+		return dir;
+	}
+	
 }

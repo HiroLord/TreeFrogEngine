@@ -10,16 +10,45 @@ public class Terrain extends GameObject{
 	
 	private float stepWidth, stepHeight;
 	
+	private float[] pointA, pointB, pointC;
+	private float[] vectorA, vectorB, n;
+	
 	public Terrain(float x, float y, float stepWidth, float stepHeight, int width, int height){
 		super(x,y,0,width,height,null);
 		getModel().setSprite(Assets.sprWall);
 		this.stepWidth = stepWidth;
 		this.stepHeight = stepHeight;
+		pointA = new float[3];
+		pointB = new float[3];
+		pointC = new float[3];
+		vectorA = new float[3];
+		vectorB = new float[3];
+		n = new float[3];
 		rand = new Random();
 		heightMap = new NumericalMatrix((int)(height/stepHeight)+1,(int)(width/stepWidth)+1);
 		//generateSlopedHeightMap(4f);
-		generateRandomHeightMap(4f);
+		//generateRandomHeightMap(4f);
+		generateFlatHeightMap(0f);
 		renderHeightMap();
+	}
+	
+	public void raiseHeight(float amnt, float x, float y){
+		int colLeft = (int)(x/stepWidth);
+		int colRight = colLeft + 1;
+		int rowBottom = (int)(y/stepHeight);
+		int rowTop = rowBottom + 1;
+		int c = colLeft;
+		if (colRight*stepWidth - x < x - colLeft*stepWidth)
+			c = colRight;
+		int r = rowBottom;
+		if (rowTop * stepHeight - y < y - rowBottom*stepHeight)
+			r = rowTop;
+		setHeight(getHeight(r,c)+amnt,r,c);
+		renderHeightMap();
+	}
+	
+	public float grabLastNormalZ(){
+		return n[2]/(float)Math.sqrt(n[0]*n[0] + n[1]*n[1] + n[2]*n[2]);
 	}
 	
 	public void generateSlopedHeightMap(float endHeight){
@@ -29,6 +58,14 @@ public class Terrain extends GameObject{
 			for (int c = 0; c < heightMap.getColumnDimension(); c++){
 				heightMap.put(h, r, c);
 				h -= (stepWidth/(float)getWidth())*(endHeight);
+			}
+		}
+	}
+	
+	public void generateFlatHeightMap(float height){
+		for (int r = 0; r < heightMap.getRowDimension(); r++){
+			for (int c = 0; c < heightMap.getColumnDimension(); c++){
+				heightMap.put(height, r, c);
 			}
 		}
 	}
@@ -82,19 +119,47 @@ public class Terrain extends GameObject{
 	public float getHeight(float x, float y){
 		if (x < getX() || y < getY() || x >= getX() + getWidth() || y >= getY() + getLength())
 			return 5f;
-		int colLeft = (int)Math.floor(x/stepWidth);
-		int colRight = colLeft + 1;
-		int rowBottom = (int)Math.floor(y/stepHeight);
-		int rowTop = rowBottom + 1;
-		float percentX = (x%stepWidth)/stepWidth;
-		float percentY = (y%stepHeight)/stepHeight;
-		float leftHeight = (heightMap.get(rowBottom, colLeft) + heightMap.get(rowTop, colLeft))/2f;
-		float rightHeight = (heightMap.get(rowBottom, colRight) + heightMap.get(rowTop, colRight))/2f;
-		float topHeight = (heightMap.get(rowTop, colLeft) + heightMap.get(rowTop, colRight))/2f;
-		float bottomHeight = (heightMap.get(rowBottom, colLeft) + heightMap.get(rowBottom, colRight))/2f;
-		float outputx = leftHeight * (1f-percentX) + rightHeight * (percentX);
-		float outputy = bottomHeight * (1f-percentY) + topHeight * (percentY);
-		return (outputx); //+outputy)/2f;
+		
+		int colLeft = (int)(x/stepWidth);
+		int rowTop = (int)(y/stepHeight) + 1;
+		if (x - (colLeft*stepWidth) > (rowTop*stepHeight) - y){
+			pointA[0] = colLeft*stepWidth;
+			pointA[1] = rowTop*stepHeight;
+			pointA[2] = heightMap.get(rowTop, colLeft);
+			
+			pointC[0] = (colLeft+1)*stepWidth;
+			pointC[1] = rowTop*stepHeight;
+			pointC[2] = heightMap.get(rowTop, colLeft+1);
+			
+			pointB[0] = (colLeft+1)*stepWidth;
+			pointB[1] = (rowTop-1)*stepHeight;
+			pointB[2] = heightMap.get(rowTop-1, colLeft+1);
+		} else {
+			pointA[0] = colLeft*stepWidth;
+			pointA[1] = rowTop*stepHeight;
+			pointA[2] = heightMap.get(rowTop, colLeft);
+			
+			pointB[0] = colLeft*stepWidth;
+			pointB[1] = (rowTop-1)*stepHeight;
+			pointB[2] = heightMap.get(rowTop-1, colLeft);
+			
+			pointC[0] = (colLeft+1)*stepWidth;
+			pointC[1] = (rowTop-1)*stepHeight;
+			pointC[2] = heightMap.get(rowTop-1, colLeft+1);
+		}
+		
+		vectorA[0] = pointB[0] - pointA[0];
+		vectorA[1] = pointB[1] - pointA[1];
+		vectorA[2] = pointB[2] - pointA[2];
+		vectorB[0] = pointC[0] - pointA[0];
+		vectorB[1] = pointC[1] - pointA[1];
+		vectorB[2] = pointC[2] - pointA[2];
+		
+		n[0] =  (vectorA[1]*vectorB[2] - vectorA[2]*vectorB[1]);
+		n[1] = -(vectorA[0]*vectorB[2] - vectorA[2]*vectorB[0]);
+		n[2] =  (vectorA[0]*vectorB[1] - vectorA[1]*vectorB[0]);
+		
+		return (n[0]*(x-pointA[0]) + n[1]*(y-pointA[1]) - n[2]*pointA[2])/(-n[2]);
 	}
 	
 }

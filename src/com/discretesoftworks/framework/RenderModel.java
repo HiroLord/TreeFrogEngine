@@ -95,6 +95,7 @@ public class RenderModel extends GriddedObject{
     
     private float dir;
     private float newDir;
+    private boolean spin;
     
     public RenderModel() {
     	super(0,0,0,1,1);
@@ -108,13 +109,13 @@ public class RenderModel extends GriddedObject{
         mTextureDataHandle = 0;
         
         set = false;
+        spin = true;
         newDir = dir = 0f;
     }
     
     public void setupModel(float[] verts, float[] textureCoords, short[] indicies) {
     	coords = verts;
     	texCoords = textureCoords;
-    	System.out.println(texCoords);
     	drawOrder = indicies;
     	
     	// initialize vertex byte buffer for shape coordinates
@@ -160,11 +161,6 @@ public class RenderModel extends GriddedObject{
         GLES20.glLinkProgram(mProgram);                  // create OpenGL program executables
     }
     
-//    public void new3DModel(float[] m){
-////    	this.coords = m;
-////    	setSize(this.coords);
-//    }
-    
     public void remakeModelMatrix(){
     	Matrix.setIdentityM(mModelMatrix, 0);
     	Matrix.scaleM(mModelMatrix, 0, scale[0], scale[1], scale[2]);
@@ -198,6 +194,14 @@ public class RenderModel extends GriddedObject{
         setNewDir(0);
         set = true;
         visible = true;
+    }
+    
+    public void setSpin(boolean spin){
+    	this.spin = spin;
+    }
+    
+    public boolean getSpin(){
+    	return spin;
     }
     
     public void setDir(float dir){
