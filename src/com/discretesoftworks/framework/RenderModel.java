@@ -21,48 +21,58 @@ public class RenderModel extends GriddedObject{
 	
 	
     private final String vertexShaderCode =
-   		//Test
     	"attribute vec2 a_TexCoordinate;" +
     	"varying vec2 v_TexCoordinate;" +
-    	//End Test
+    	"varying vec4 lightness;" +
+    	
+    	//Lights
+    	"uniform vec4 lightPos;"+
+    	"uniform vec4 lightColor;"+
 
-        "uniform mat4 uMVPMatrix;" +
+        "uniform mat4 uMMatrix;" +
+        "uniform mat4 uVPMatrix;" +
 
         "attribute vec4 vPosition;" +
         "void main() {" +
-
-        "  gl_Position = uMVPMatrix * vPosition;" +
-		      //Test
-		      "v_TexCoordinate = a_TexCoordinate;" +
-		      //End Test
+        "  vec4 worldPos = uMMatrix * vPosition;"+
+        "  gl_Position = uVPMatrix * worldPos;" +
+		"  v_TexCoordinate = a_TexCoordinate;" +
+		"  vec4 normal = vec4(0.0,0.0,1.0,0.0);"+
+        "  float distance = length(lightPos-worldPos);"+
+        "  float dottedAngle = dot(normalize(lightPos-worldPos),normal);" +
+		"  lightness = (lightColor * dottedAngle) * (1.0 / (1.0 + distance * distance));"+
+        "  lightness = vec4(lightness.xyz,1.0);"+
         "}";
 
     private final String fragmentShaderCode =
         "precision mediump float;" +
         "uniform vec4 vColor;" +
-	      //Test
-	      "uniform sampler2D u_Texture;" +
-	      "varying vec2 v_TexCoordinate;" +
-	      //End Test
+	    "uniform sampler2D u_Texture;" +
+	    "varying vec2 v_TexCoordinate;" +
+	    "varying vec4 lightness;" +
+	    
         "void main() {" +
-        //"  gl_FragColor = vColor;" +
-        "gl_FragColor = (vColor * texture2D(u_Texture, v_TexCoordinate));" +
-        //"    gl_FragColor = vColor * vec4(v_TexCoordinate.x, v_TexCoordinate.y, 0, 1);"+
+        "  gl_FragColor = (lightness * vColor * texture2D(u_Texture, v_TexCoordinate));" +
         "}";
 
     private FloatBuffer vertexBuffer;
+    private FloatBuffer normalBuffer;
     private ShortBuffer drawListBuffer;
     private int mProgram;
     private int mPositionHandle;
     private int mColorHandle;
-    private int mMVPMatrixHandle;
+    private int mMMatrixHandle;
+    private int mVPMatrixHandle;
+    private int lightPosHandle;
+    private int lightColorHandle;
 
     // number of coordinates per vertex in this array
 
     static final int COORDS_PER_VERTEX = 3;
     //private PointF topLeft = new PointF(0,0);
     private float[] mModelMatrix = new float[16];
-    private float[] mvpMatrix = new float[16];
+    private float[] identityMatrix = new float[16];
+//    private float[] mvpMatrix = new float[16];
     private float[] coords; /*= { -0.5f,  0.5f, 0f,
             						 -0.5f, -0.5f, 0f,
             						  0.5f, -0.5f, 0f,
@@ -78,6 +88,7 @@ public class RenderModel extends GriddedObject{
     private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex
     
     private float[] texCoords;
+    private float[] normals;
 
     // Set color with red, green, blue and alpha (opacity) values
     float color[] = { .75f, .75f, .75f, 1.0f };
@@ -111,12 +122,15 @@ public class RenderModel extends GriddedObject{
         set = false;
         spin = true;
         newDir = dir = 0f;
+        
+        Matrix.setIdentityM(identityMatrix, 0);
     }
     
-    public void setupModel(float[] verts, float[] textureCoords, short[] indicies) {
+    public void setupModel(float[] verts, float[] normalCoords, float[] textureCoords, short[] indicies) {
     	coords = verts;
     	texCoords = textureCoords;
     	drawOrder = indicies;
+    	normals = normalCoords;
     	
     	// initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
@@ -124,8 +138,17 @@ public class RenderModel extends GriddedObject{
                 coords.length * 4);
         bb.order(ByteOrder.nativeOrder());
         vertexBuffer = bb.asFloatBuffer();
-        setSize(coords);
+        vertexBuffer.put(coords);
+        vertexBuffer.position(0);
         
+        
+        ByteBuffer bn = ByteBuffer.allocateDirect(
+        					//#) of normal values * 4 bytes per float
+        					normals.length * 4);
+        bn.order(ByteOrder.nativeOrder());
+        normalBuffer = bn.asFloatBuffer();
+        normalBuffer.put(normals);
+        normalBuffer.position(0);
         
         // S, T (or X, Y)
         // Texture coordinate data.
@@ -175,12 +198,16 @@ public class RenderModel extends GriddedObject{
    			 					 -width, -height, 0f,
    			 					  width, -height, 0f,
    			 					  width,  height, 0f };
+    	float[] squareNormals = { 0.0f, 0.0f, 1.0f,
+    							  0.0f, 0.0f, 1.0f,
+    							  0.0f, 0.0f, 1.0f,
+    							  0.0f, 0.0f, 1.0f};
     	float[] textureCoords = { 0.0f,  0.0f,
    	        					  0.0f,  1.0f,
    	        					  1.0f,  1.0f,
    	        					  1.0f,  0.0f };
    	    short[] squareDrawOrder = { 0, 1, 2, 0, 2, 3 };
-   	    setupModel(squareCoords, textureCoords, squareDrawOrder);
+   	    setupModel(squareCoords, squareNormals, textureCoords, squareDrawOrder);
     }
     
     public void set(float x, float y, float width, float height){
@@ -268,10 +295,6 @@ public class RenderModel extends GriddedObject{
     	mTextureCoordinates.put(texCoords).position(0);
     }
     
-    public void setSize(float[] squareCoords){
-        vertexBuffer.put(squareCoords).position(0);
-    }
-    
     public void setHudElement(boolean h){
     	this.hudElement = h;
     	if (h)
@@ -334,24 +357,24 @@ public class RenderModel extends GriddedObject{
 	          	dir -= 360;
 	        else if (dir < -180)
 	           	dir += 360;
-            
+
 	        // Add program to OpenGL environment
 	        GLES20.glUseProgram(mProgram);
-	
+	        MyGLRenderer.checkGlError("glGetUniformLocation");
 	        // get handle to vertex shader's vPosition member
 	        mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
-	
+
 	        // Enable a handle to the triangle vertices
 	        GLES20.glEnableVertexAttribArray(mPositionHandle);
-	
+
 	        // Prepare the triangle coordinate data
 	        GLES20.glVertexAttribPointer(mPositionHandle, COORDS_PER_VERTEX,
 	                                     GLES20.GL_FLOAT, false,
 	                                     vertexStride, vertexBuffer);
-	
+
 	        // get handle to fragment shader's vColor member
 	        mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
-	
+
 	        // Set color for drawing the triangle
 	        GLES20.glUniform4fv(mColorHandle, 1, color, 0);
 	        
@@ -359,6 +382,7 @@ public class RenderModel extends GriddedObject{
 	        //Set Texture Handles and bind Texture
 	        mTextureUniformHandle = GLES20.glGetAttribLocation(mProgram, "u_Texture");
 	        mTextureCoordinateHandle = GLES20.glGetAttribLocation(mProgram, "a_TexCoordinate");
+
 
 	        //Set the active texture unit to texture unit 0.
 	        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
@@ -378,18 +402,25 @@ public class RenderModel extends GriddedObject{
 	        GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 	        GLES20.glEnable(GLES20.GL_BLEND);
 	        
+	        //Pass in lights
+	        lightPosHandle = GLES20.glGetUniformLocation(mProgram, "lightPos");
+	        lightColorHandle = GLES20.glGetUniformLocation(mProgram, "lightColor");
+	        GLES20.glUniform4f(lightPosHandle, 50.0f, 50.0f, 500.0f, 1.0f);
+	        GLES20.glUniform4f(lightColorHandle, 300000.0f, 300000.0f, 300000.0f, 1.0f);
 	
-	        // get handle to shape's transformation matrix
-	        mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
+	        // get handle to shape's transformation matrixs
+	        mMMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMMatrix");
+	        mVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uVPMatrix");
 	        MyGLRenderer.checkGlError("glGetUniformLocation");
 	        
-	        if (!getHudElement())
-	        	Matrix.multiplyMM(mvpMatrix, 0, vpMatrix, 0, mModelMatrix, 0);
-	        else
-	        	mvpMatrix = mModelMatrix;
-	        
 	        // Apply the projection and view transformation
-	        GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
+	        if (!getHudElement()) {
+	        	GLES20.glUniformMatrix4fv(mMMatrixHandle, 1, false, mModelMatrix, 0);
+	        	GLES20.glUniformMatrix4fv(mVPMatrixHandle, 1, false, vpMatrix, 0);
+	        } else {
+	        	GLES20.glUniformMatrix4fv(mMMatrixHandle, 1, false, mModelMatrix, 0);
+	        	GLES20.glUniformMatrix4fv(mVPMatrixHandle, 1, false, identityMatrix, 0);
+	        }
 	        MyGLRenderer.checkGlError("glUniformMatrix4fv");
 	
 	        // Draw the square

@@ -105,7 +105,15 @@ public class Terrain extends GameObject{
 				indicies[j++] = (short)heightMap.getIndex(r+1, c+1);
 			}
 		}
-		getModel().setupModel(verts, textureCoords, indicies);
+		//Nathan's Super Excellent Placeholder Code!
+		//End Nathan's Super Excellent Placeholder Code!
+		float[] normals = new float[verts.length];
+		for (int n = 0; n < normals.length; n+=3) {
+			normals[n] = 0.0f;
+			normals[n+1] = 0.0f;
+			normals[n+2] = 1.0f;
+		}
+		getModel().setupModel(verts, normals, textureCoords, indicies);
 	}
 	
 	public void setHeight(float height, int r, int c){

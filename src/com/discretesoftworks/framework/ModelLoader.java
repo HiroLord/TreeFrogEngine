@@ -25,6 +25,7 @@ public class ModelLoader {
 		ArrayList<Float> vertexNormals = new ArrayList<Float>();
 		ArrayList<Short> faces = new ArrayList<Short>();
 		ArrayList<Short> facesTex = new ArrayList<Short>();
+		ArrayList<Short> facesNorm = new ArrayList<Short>();
 		
 		for (int i = 0; i < lines.length; i++) {
 			line = lines[i];
@@ -42,15 +43,17 @@ public class ModelLoader {
 				} else if (line.charAt(1) == 'n') {
 					//normal
 					vertexNormals.add(Float.parseFloat(coords[1]));
+					vertexNormals.add(-Float.parseFloat(coords[3]));
+					//Out of order to make z up
 					vertexNormals.add(Float.parseFloat(coords[2]));
-					vertexNormals.add(Float.parseFloat(coords[3]));
 				} else if (line.charAt(1) == 'p') {
 					//Parameter Space
 				} else {
 					//Regular vertex
 					positionCoords.add(Float.parseFloat(coords[1]));
+					positionCoords.add(-Float.parseFloat(coords[3]));
+					//Out of order to make z be up
 					positionCoords.add(Float.parseFloat(coords[2]));
-					positionCoords.add(Float.parseFloat(coords[3]));
 				}
 				break;
 			case 'f':
@@ -59,9 +62,11 @@ public class ModelLoader {
 				for (short j = 1; j < 4; j++) {
 					short positionIndex = (short)(Short.parseShort(tripIndic[j].split("/")[0]) - 1);
 					short texIndex = (short)(Short.parseShort(tripIndic[j].split("/")[1]) - 1);
+					short normIndex = (short)(Short.parseShort(tripIndic[j].split("/")[2]) - 1);
 
 					faces.add(positionIndex);
 					facesTex.add(texIndex);
+					facesNorm.add(normIndex);
 				}
 				
 				break;
@@ -94,18 +99,23 @@ public class ModelLoader {
 			}
 		}
 		float[] verticiesArray = new float[(textureCoords.size()/2)*3];
-		float[] texCoords = new float[textureCoords.size()];
+		float[] normalsArray = new float[(textureCoords.size()/2)*3];
+		float[] texArray = new float[textureCoords.size()];
 		short[] indiciesArray = new short[facesTex.size()];
 		for (int i = 0; i < textureCoords.size(); i++) {
-			texCoords[i] = textureCoords.get(i);
+			texArray[i] = textureCoords.get(i);
 		}
 		for (int i = 0; i < facesTex.size(); i++) {
 			indiciesArray[i] = facesTex.get(i);
 			verticiesArray[facesTex.get(i)*3] = positionCoords.get(faces.get(i)*3);
 			verticiesArray[facesTex.get(i)*3+1] = positionCoords.get(faces.get(i)*3+1);
 			verticiesArray[facesTex.get(i)*3+2] = positionCoords.get(faces.get(i)*3+2);
+			
+			normalsArray[facesTex.get(i)*3] = vertexNormals.get(facesNorm.get(i)*3);
+			normalsArray[facesTex.get(i)*3+1] = vertexNormals.get(facesNorm.get(i)*3+1);
+			normalsArray[facesTex.get(i)*3+2] = vertexNormals.get(facesNorm.get(i)*3+2);
 		}
-		object.setupModel(verticiesArray, texCoords, indiciesArray);
+		object.setupModel(verticiesArray, normalsArray, texArray, indiciesArray);
 		object.setSprite(sprite);
 		
 		return object;
