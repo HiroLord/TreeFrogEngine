@@ -71,11 +71,13 @@ public abstract class AndroidGame extends Activity{
     
     @Override
 	public void onResume() {
+    	System.out.println("Resuming.");
 		super.onResume();
 	}
 	
 	@Override
 	public void onPause() {
+		System.out.println("Pausing.");
 		super.onPause();
 	}
 	

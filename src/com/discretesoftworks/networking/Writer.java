@@ -90,6 +90,8 @@ public class Writer{
 		writebyte(num%255);
 	}
 	
+	
+	
 	/* Reads a 2-byte UNSIGNED integer */
 	public int readushort() throws IOException{
 		int num = 0;
@@ -106,6 +108,29 @@ public class Writer{
 	/* Writes a 2-byte UNSIGNED integer */
 	public void writeushort(int num) throws IOException{
 		out.write((int)(num/255));
+		out.write(num%255);
+	}
+	
+	/* Reads a 4-byte UNSIGNED integer */
+	public int readuint() throws IOException{
+		int num = 0;
+		if (in.available() >= 4){
+			num = (in.read()*255);
+			num = (in.read()*255);
+			num = (in.read()*255);
+			num += in.read();
+		}
+		else{
+			System.err.println("Invalid reciept");
+		}
+		return num;
+	}
+	
+	/* Writes a 4-byte UNSIGNED integer */
+	public void writeuint(int num) throws IOException{
+		out.write((int)(num/=255));
+		out.write((int)(num/=255));
+		out.write((int)(num/=255));
 		out.write(num%255);
 	}
 	

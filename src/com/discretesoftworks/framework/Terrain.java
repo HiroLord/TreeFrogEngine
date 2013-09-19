@@ -27,8 +27,8 @@ public class Terrain extends GameObject{
 		rand = new Random();
 		heightMap = new NumericalMatrix((int)(height/stepHeight)+1,(int)(width/stepWidth)+1);
 		//generateSlopedHeightMap(4f);
-		//generateRandomHeightMap(4f);
-		generateFlatHeightMap(0f);
+		generateRandomHeightMap(4f);
+		//generateFlatHeightMap(0f);
 		renderHeightMap();
 	}
 	
