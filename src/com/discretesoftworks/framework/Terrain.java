@@ -47,8 +47,8 @@ public class Terrain extends GameObject{
 		renderHeightMap();
 	}
 	
-	public float grabLastNormalZ(){
-		return n[2]/(float)Math.sqrt(n[0]*n[0] + n[1]*n[1] + n[2]*n[2]);
+	public float[] grabLastNormal(){
+		return n;
 	}
 	
 	public void generateSlopedHeightMap(float endHeight){
@@ -93,27 +93,85 @@ public class Terrain extends GameObject{
 			}
 		}
 		short[] indicies = new short[(heightMap.getColumnDimension()-1) * (heightMap.getRowDimension()-1) * 6];
+		// Sets the order of the verticies, adjusting the direction of the triangles.
 		int j = 0;
 		for (int r = 0; r < heightMap.getRowDimension()-1; r++){
 			for (int c = 0; c < heightMap.getColumnDimension()-1; c++){
-				indicies[j++] = (short)heightMap.getIndex(r, c);
-				indicies[j++] = (short)heightMap.getIndex(r+1, c+1);
-				indicies[j++] = (short)heightMap.getIndex(r, c+1);
-				
-				indicies[j++] = (short)heightMap.getIndex(r, c);
-				indicies[j++] = (short)heightMap.getIndex(r+1, c);
-				indicies[j++] = (short)heightMap.getIndex(r+1, c+1);
+				if (heightMap.isEvenBox(r, c)){
+					indicies[j++] = (short)heightMap.getIndex(r, c);
+					indicies[j++] = (short)heightMap.getIndex(r+1, c+1);
+					indicies[j++] = (short)heightMap.getIndex(r, c+1);
+					
+					indicies[j++] = (short)heightMap.getIndex(r, c);
+					indicies[j++] = (short)heightMap.getIndex(r+1, c);
+					indicies[j++] = (short)heightMap.getIndex(r+1, c+1);
+				} else {
+					indicies[j++] = (short)heightMap.getIndex(r, c);
+					indicies[j++] = (short)heightMap.getIndex(r+1, c);
+					indicies[j++] = (short)heightMap.getIndex(r, c+1);
+					
+					indicies[j++] = (short)heightMap.getIndex(r, c+1);
+					indicies[j++] = (short)heightMap.getIndex(r+1, c);
+					indicies[j++] = (short)heightMap.getIndex(r+1, c+1);
+				}
 			}
 		}
 		//Nathan's Super Excellent Placeholder Code!
 		//End Nathan's Super Excellent Placeholder Code!
 		float[] normals = new float[verts.length];
-		for (int n = 0; n < normals.length; n+=3) {
-			normals[n] = 0.0f;
-			normals[n+1] = 0.0f;
-			normals[n+2] = 1.0f;
+		int no = 0;
+		for (int r = 0; r < heightMap.getRowDimension(); r++){
+			for (int c = 0; c < heightMap.getColumnDimension(); c++){
+				getAverageNormalAroundPoint(r,c);
+				normals[no++] = n[0];
+				normals[no++] = n[1];
+				normals[no++] = n[2];
+			}
 		}
 		getModel().setupModel(verts, normals, textureCoords, indicies);
+	}
+	
+	public float[] getAverageNormalAroundPoint(int r, int c){
+		float[] normalsArray = new float[3];
+		getNormal((c * stepWidth)-(stepWidth/2f), (r * stepHeight)+(stepHeight/4f));
+		normalsArray[0] += n[0];
+		normalsArray[1] += n[1];
+		normalsArray[2] += n[2];
+		getNormal((c * stepWidth)-(stepWidth/4f), (r * stepHeight)+(stepHeight/2f));
+		normalsArray[0] += n[0];
+		normalsArray[1] += n[1];
+		normalsArray[2] += n[2];
+		getNormal((c * stepWidth)+(stepWidth/4f), (r * stepHeight)+(stepHeight/2f));
+		normalsArray[0] += n[0];
+		normalsArray[1] += n[1];
+		normalsArray[2] += n[2];
+		getNormal((c * stepWidth)+(stepWidth/2f), (r * stepHeight)+(stepHeight/4f));
+		normalsArray[0] += n[0];
+		normalsArray[1] += n[1];
+		normalsArray[2] += n[2];
+		getNormal((c * stepWidth)+(stepWidth/2f), (r * stepHeight)-(stepHeight/4f));
+		normalsArray[0] += n[0];
+		normalsArray[1] += n[1];
+		normalsArray[2] += n[2];
+		getNormal((c * stepWidth)+(stepWidth/4f), (r * stepHeight)-(stepHeight/2f));
+		normalsArray[0] += n[0];
+		normalsArray[1] += n[1];
+		normalsArray[2] += n[2];
+		getNormal((c * stepWidth)-(stepWidth/4f), (r * stepHeight)-(stepHeight/2f));
+		normalsArray[0] += n[0];
+		normalsArray[1] += n[1];
+		normalsArray[2] += n[2];
+		getNormal((c * stepWidth)-(stepWidth/2f), (r * stepHeight)-(stepHeight/4f));
+		normalsArray[0] += n[0];
+		normalsArray[1] += n[1];
+		normalsArray[2] += n[2];
+		normalsArray[0] /= 8f;
+		normalsArray[1] /= 8f;
+		normalsArray[2] /= 8f;
+		n[0] = normalsArray[0];
+		n[1] = normalsArray[1];
+		n[2] = normalsArray[2];
+		return n;
 	}
 	
 	public void setHeight(float height, int r, int c){
@@ -127,6 +185,18 @@ public class Terrain extends GameObject{
 	public float getHeight(float x, float y){
 		if (x < getX() || y < getY() || x >= getX() + getWidth() || y >= getY() + getLength())
 			return 5f;
+		
+		getNormal(x,y);
+		return (n[0]*(x-pointA[0]) + n[1]*(y-pointA[1]) - n[2]*pointA[2])/(-n[2]);
+	}
+	
+	public float[] getNormal(float x, float y){
+		if (x < getX() || y < getY() || x >= getX() + getWidth() || y >= getY() + getLength()){
+			n[0] = 0;
+			n[1] = 0;
+			n[2] = 1;
+			return n;
+		}
 		
 		int colLeft = (int)(x/stepWidth);
 		int rowTop = (int)(y/stepHeight) + 1;
@@ -166,8 +236,12 @@ public class Terrain extends GameObject{
 		n[0] =  (vectorA[1]*vectorB[2] - vectorA[2]*vectorB[1]);
 		n[1] = -(vectorA[0]*vectorB[2] - vectorA[2]*vectorB[0]);
 		n[2] =  (vectorA[0]*vectorB[1] - vectorA[1]*vectorB[0]);
+		float mag = (float)Math.sqrt(n[0]*n[0] + n[1]*n[1] + n[2]*n[2]);
+		n[0] /= mag;
+		n[1] /= mag;
+		n[2] /= mag;
 		
-		return (n[0]*(x-pointA[0]) + n[1]*(y-pointA[1]) - n[2]*pointA[2])/(-n[2]);
+		return n;
 	}
 	
 }

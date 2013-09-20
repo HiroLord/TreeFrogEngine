@@ -26,6 +26,14 @@ public class NumericalMatrix {
 		// Get a value using row-major
 		return array[(cols - 1 - row)*cols + col];
 	}
+	
+	public boolean isEvenBox(int r, int c){
+		return (r + c)%2 == 0;
+	}
+	
+	public boolean isOddBox(int r, int c){
+		return (r + c)%2 != 0;
+	}
 
 	public NumericalMatrix add(final NumericalMatrix rhs) throws IllegalArgumentException {
 		// If the dimensions are not correct, throw an exception
