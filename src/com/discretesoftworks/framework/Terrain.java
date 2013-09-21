@@ -200,30 +200,58 @@ public class Terrain extends GameObject{
 		
 		int colLeft = (int)(x/stepWidth);
 		int rowTop = (int)(y/stepHeight) + 1;
-		if (x - (colLeft*stepWidth) > (rowTop*stepHeight) - y){
-			pointA[0] = colLeft*stepWidth;
-			pointA[1] = rowTop*stepHeight;
-			pointA[2] = heightMap.get(rowTop, colLeft);
-			
-			pointC[0] = (colLeft+1)*stepWidth;
-			pointC[1] = rowTop*stepHeight;
-			pointC[2] = heightMap.get(rowTop, colLeft+1);
-			
-			pointB[0] = (colLeft+1)*stepWidth;
-			pointB[1] = (rowTop-1)*stepHeight;
-			pointB[2] = heightMap.get(rowTop-1, colLeft+1);
+		if (heightMap.isOddBox(rowTop+1, colLeft)){
+			if (x - (colLeft*stepWidth) > (rowTop*stepHeight) - y){
+				pointA[0] = colLeft*stepWidth;
+				pointA[1] = rowTop*stepHeight;
+				pointA[2] = heightMap.get(rowTop, colLeft);
+				
+				pointC[0] = (colLeft+1)*stepWidth;
+				pointC[1] = rowTop*stepHeight;
+				pointC[2] = heightMap.get(rowTop, colLeft+1);
+				
+				pointB[0] = (colLeft+1)*stepWidth;
+				pointB[1] = (rowTop-1)*stepHeight;
+				pointB[2] = heightMap.get(rowTop-1, colLeft+1);
+			} else {
+				pointA[0] = colLeft*stepWidth;
+				pointA[1] = rowTop*stepHeight;
+				pointA[2] = heightMap.get(rowTop, colLeft);
+				
+				pointB[0] = colLeft*stepWidth;
+				pointB[1] = (rowTop-1)*stepHeight;
+				pointB[2] = heightMap.get(rowTop-1, colLeft);
+				
+				pointC[0] = (colLeft+1)*stepWidth;
+				pointC[1] = (rowTop-1)*stepHeight;
+				pointC[2] = heightMap.get(rowTop-1, colLeft+1);
+			}
 		} else {
-			pointA[0] = colLeft*stepWidth;
-			pointA[1] = rowTop*stepHeight;
-			pointA[2] = heightMap.get(rowTop, colLeft);
-			
-			pointB[0] = colLeft*stepWidth;
-			pointB[1] = (rowTop-1)*stepHeight;
-			pointB[2] = heightMap.get(rowTop-1, colLeft);
-			
-			pointC[0] = (colLeft+1)*stepWidth;
-			pointC[1] = (rowTop-1)*stepHeight;
-			pointC[2] = heightMap.get(rowTop-1, colLeft+1);
+			if (x - (colLeft*stepWidth) < y - ((rowTop-1)*stepHeight)){
+				pointA[0] = colLeft*stepWidth;
+				pointA[1] = (rowTop-1)*stepHeight;
+				pointA[2] = heightMap.get(rowTop-1, colLeft);
+				
+				pointC[0] = colLeft*stepWidth;
+				pointC[1] = rowTop*stepHeight;
+				pointC[2] = heightMap.get(rowTop, colLeft);
+				
+				pointB[0] = (colLeft+1)*stepWidth;
+				pointB[1] = rowTop*stepHeight;
+				pointB[2] = heightMap.get(rowTop, colLeft+1);
+			} else {
+				pointA[0] = colLeft*stepWidth;
+				pointA[1] = (rowTop-1)*stepHeight;
+				pointA[2] = heightMap.get(rowTop-1, colLeft);
+				
+				pointB[0] = (colLeft+1)*stepWidth;
+				pointB[1] = (rowTop-1)*stepHeight;
+				pointB[2] = heightMap.get(rowTop-1, colLeft+1);
+				
+				pointC[0] = (colLeft+1)*stepWidth;
+				pointC[1] = (rowTop)*stepHeight;
+				pointC[2] = heightMap.get(rowTop, colLeft+1);
+			}
 		}
 		
 		vectorA[0] = pointB[0] - pointA[0];
