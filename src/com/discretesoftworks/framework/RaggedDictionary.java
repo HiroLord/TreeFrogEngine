@@ -3,35 +3,47 @@ package com.discretesoftworks.framework;
 import java.util.ArrayList;
 
 // A Dictionary where all values are arrays.
-public class RaggedDictionary<T,E>{
+public class RaggedDictionary<T extends Comparable<T>,E>{
 	
-	private Pair<T,ArrayList<E>>[] data;
-	private int amount;
+	private ArrayList<Pair<T,ArrayList<E>>> data;
 	private ArrayList<E> compiledData;
+	
+	public static final byte LEFT_TO_RIGHT = 1;
+	public static final byte RIGHT_TO_LEFT = 2;
+	
+	private int sorting;
 
 	
-	@SuppressWarnings("unchecked")
-	public RaggedDictionary(int size){
-		data = new Pair[size];
+	public RaggedDictionary(byte sorting){
+		data = new ArrayList<Pair<T,ArrayList<E>>>();
 		compiledData = new ArrayList<E>();
-		amount = 0;
+		this.sorting = sorting;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void clear(){
-		data = new Pair[data.length];
+		data = new ArrayList<Pair<T,ArrayList<E>>>();
 		compiledData = new ArrayList<E>();
-		amount = 0;
 	}
 	
 	public void add(T key, E value){
 		int k = indexOf(key);
 		if (k < 0){
-			k = amount;
-			amount += 1;
-			data[k] = new Pair<T, ArrayList<E>>(key, new ArrayList<E>());
+			int i = 0;
+			for (i = 0; i < data.size(); i++){
+				if (sorting == LEFT_TO_RIGHT)
+					if (key.compareTo(data.get(i).a) < 0){
+						break;
+					}
+				else
+					if (key.compareTo(data.get(i).a) > 0){
+						i++;
+						break;
+					}
+			}
+			data.add(i, new Pair<T, ArrayList<E>>(key, new ArrayList<E>()));
+			k = i;
 		}
-		data[k].b.add(0,value);
+		data.get(k).b.add(0,value);
 		compileData();
 	}
 	
@@ -42,8 +54,8 @@ public class RaggedDictionary<T,E>{
 	
 	public boolean removeAll(E value){
 		boolean found = false;
-		for (int i = 0; i < amount; i++){
-			boolean f = data[i].b.remove(value);
+		for (int i = 0; i < data.size(); i++){
+			boolean f = data.get(i).b.remove(value);
 			if (f)
 				found = true;
 		}
@@ -52,23 +64,23 @@ public class RaggedDictionary<T,E>{
 	}
 	
 	public int indexOf(T key){
-		for (int i = 0; i < amount; i++)
-			if (data[i].a == key)
+		for (int i = 0; i < data.size(); i++)
+			if (data.get(i).a == key)
 				return i;
 		return -1;
 	}
 	
 	public Pair<T,ArrayList<E>> find(T key){
-		for (int i = 0; i < amount; i++)
-			if (data[i].a == key)
-				return data[i];
+		for (int i = 0; i < data.size(); i++)
+			if (data.get(i).a == key)
+				return data.get(i);
 		return null;
 	}
 	
 	public void compileData(){
 		compiledData.clear();
-		for (int i = 0; i < amount; i++){
-			for (E e : data[i].b)
+		for (int i = 0; i < data.size(); i++){
+			for (E e : data.get(i).b)
 				compiledData.add(e);
 		}
 	}

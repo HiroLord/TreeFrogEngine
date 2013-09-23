@@ -19,7 +19,7 @@ public abstract class GameRenderer {
 	private AndroidGame game;
 	
 	public GameRenderer(){
-		renderObjects = new RaggedDictionary<Integer, GameObject>(1000);
+		renderObjects = new RaggedDictionary<Integer, GameObject>(RaggedDictionary.RIGHT_TO_LEFT);
 		toAdd = new ArrayList<GameObject>();
 		toRemove = new ArrayList<GameObject>();
 		solidObjects = new ArrayList<GriddedObject>();

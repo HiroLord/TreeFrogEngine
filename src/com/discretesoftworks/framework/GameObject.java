@@ -21,6 +21,10 @@ public abstract class GameObject extends GriddedObject{
 		super(x,y,z,width,length);
 		this.life = 1;
 		this.objectNames = objectNames;
+		if (this.objectNames == null){
+			this.objectNames = new String[1];
+			this.objectNames[0] = null;
+		}
 		myModel = new RenderModel[this.objectNames.length];
 		depthChanged = false;
 		init = false;
