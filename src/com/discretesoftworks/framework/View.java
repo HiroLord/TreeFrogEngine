@@ -9,12 +9,14 @@ public class View extends GriddedObject{
 	private static final float baseZ = 5.5f;
 	private float speed;
 	
-	public View(float x, float y, float z){
+	public View(float x, float y, float z, float centerX, float centerY, float centerZ){
 		super(x,y,z);
-		setZ(baseZ);
 		speed = 16;
 		
-		centerX = centerY = centerZ = 0f;
+		this.centerX = centerX;
+		this.centerY = centerY;
+		this.centerZ = centerZ;
+		
 	}
 	
 	public float getCenterX(){

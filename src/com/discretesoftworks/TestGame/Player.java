@@ -23,7 +23,7 @@ public class Player extends MovingObject{
 	
 	public Player(float x, float y, float z, float width, float height) {
 		super(x, y, z, width, height, null);
-		getModel().setSprite(Assets.sprPointer);
+		getModel(0).setSprite(Assets.sprPointer);
 		left = false;
 		right = false;
 		jump = false;

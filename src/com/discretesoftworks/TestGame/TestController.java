@@ -13,7 +13,7 @@ public class TestController extends OuyaGameController{
 	public static int playerNum = 0;
 	
 	public TestController(){
-		view = new View(0,-5.5f,5.5f);
+		view = new View(0,-5.5f,5.5f,0f,0f,0f);
 	}
 	
 	public void init(){

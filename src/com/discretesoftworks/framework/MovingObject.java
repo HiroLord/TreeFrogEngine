@@ -14,8 +14,8 @@ public class MovingObject extends GameObject{
 	
 	private boolean autoMove;
 	
-	public MovingObject(float x, float y, float z, float width, float height, String objectName){
-		super(x,y,z,width,height,objectName);
+	public MovingObject(float x, float y, float z, float width, float height, String[] objectNames){
+		super(x,y,z,width,height,objectNames);
 		dx = dy = dz = 0f;
 		autoMove = false;
 		speed = 0f;
@@ -154,8 +154,10 @@ public class MovingObject extends GameObject{
 	
 	public void setDir(float dir){
 		this.dir = dir;
-		if (getModel().getSpin())
-			super.setDir(dir);
+		for (int i = 0; i < getModelAmount(); i++){
+			if (getModel(i).getSpin())
+				super.setDir(dir);
+		}
 	}
 	
 	public float getDir(){

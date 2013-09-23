@@ -9,7 +9,7 @@ public class Pointer extends GameObject{
 
 	public Pointer(float x, float y, float z){
 		super(x,y,z,1,1,null);
-		getModel().setSprite(Assets.sprPointer);
+		getModel(0).setSprite(Assets.sprPointer);
 	}
 	
 	private void grabControllerInfo(OuyaController c){

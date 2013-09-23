@@ -61,6 +61,7 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
         
         GLES20.glEnable( GLES20.GL_DEPTH_TEST );
         GLES20.glDepthFunc( GLES20.GL_LEQUAL );
+        GLES20.glEnable( GLES20.GL_CULL_FACE );
         //GLES20.glDepthMask( true );
         
         surfaceCreated = true;
@@ -210,7 +211,7 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
 
 //		Matrix.frustumM(mProjMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
 //		Matrix.orthoM(mProjMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
-		Matrix.perspectiveM(mProjMatrix, 0, 69.0f, ratio, 1, 69);
+		Matrix.perspectiveM(mProjMatrix, 0, 69.0f, ratio, 1, 100);
     }
     
     public static int loadShader(int type, String shaderCode){

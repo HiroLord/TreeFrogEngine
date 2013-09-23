@@ -15,7 +15,7 @@ public class Terrain extends GameObject{
 	
 	public Terrain(float x, float y, float stepWidth, float stepHeight, int width, int height){
 		super(x,y,0,width,height,null);
-		getModel().setSprite(Assets.sprWall);
+		getModel(0).setSprite(Assets.sprWall);
 		this.stepWidth = stepWidth;
 		this.stepHeight = stepHeight;
 		pointA = new float[3];
@@ -27,8 +27,8 @@ public class Terrain extends GameObject{
 		rand = new Random();
 		heightMap = new NumericalMatrix((int)(height/stepHeight)+1,(int)(width/stepWidth)+1);
 		//generateSlopedHeightMap(4f);
-		generateRandomHeightMap(4f);
-		//generateFlatHeightMap(0f);
+		//generateRandomHeightMap(4f);
+		generateFlatHeightMap(0f);
 		renderHeightMap();
 	}
 	
@@ -128,7 +128,7 @@ public class Terrain extends GameObject{
 				normals[no++] = n[2];
 			}
 		}
-		getModel().setupModel(verts, normals, textureCoords, indicies);
+		getModel(0).setupModel(verts, normals, textureCoords, indicies);
 	}
 	
 	public float[] getAverageNormalAroundPoint(int r, int c){

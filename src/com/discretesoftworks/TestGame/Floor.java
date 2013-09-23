@@ -7,7 +7,7 @@ public class Floor extends GameObject{
 
 	public Floor(float x, float y, float z, float width, float height){
 		super(x,y,z,width,height,null);
-		getModel().setSprite(Assets.sprGlass);
+		getModel(0).setSprite(Assets.sprGlass);
 		setSolid(true);
 	}
 	

@@ -9,38 +9,40 @@ public abstract class GameObject extends GriddedObject{
 	private boolean solid;
 	private boolean depthChanged;
 	
-	private RenderModel myModel;
+	private RenderModel[] myModel;
 	
-	private String objectName;
+	private String[] objectNames;
 	
 	private boolean init;
 	
 	private boolean needUpdate = true;
 	
-	public GameObject(float x, float y, float z, float width, float length, String objectName){
+	public GameObject(float x, float y, float z, float width, float length, String[] objectNames){
 		super(x,y,z,width,length);
 		this.life = 1;
-		this.objectName = objectName;
+		this.objectNames = objectNames;
+		myModel = new RenderModel[this.objectNames.length];
 		depthChanged = false;
 		init = false;
-		myModel = null;
 		solid = false;
 		init();
 		addSelf();
 	}
 	
 	public void init(){
-		myModel = GameRenderer.s_instance.getNewModel(getX(),getY(),getWidth(),getLength(),objectName);
+		for (int i = 0; i < myModel.length; i++)
+			myModel[i] = GameRenderer.s_instance.getNewModel(getX(),getY(),getWidth(),getLength(),objectNames[i]);
 		setDimensions(getWidth(),getLength());
 		init = true;
 	}
 	
 	public void setDir(float dir){
-		myModel.setNewDir(dir);
+		for (int i = 0; i < myModel.length; i++)
+			myModel[i].setNewDir(dir);
 	}
 	
 	public float getDir(){
-		return myModel.getDir();
+		return myModel[0].getDir();
 	}
 	
 	@Override
@@ -63,12 +65,14 @@ public abstract class GameObject extends GriddedObject{
 	}
 	
 	public void setHudElement(boolean h){
-		myModel.setHudElement(h);
+		for (int i = 0; i < myModel.length; i++)
+			myModel[i].setHudElement(h);
 	}
 	
 	public GameObject clear(){
 		init = false;
-		GameRenderer.s_instance.freeModel(myModel);
+		for (int i = 0; i < myModel.length; i++)
+			GameRenderer.s_instance.freeModel(myModel[i]);
 		return this;
 	}
 	
@@ -97,15 +101,17 @@ public abstract class GameObject extends GriddedObject{
 	}
 	
 	public void setVisible(boolean v){
-		myModel.setVisible(v);
+		for (int i = 0; i < myModel.length; i++)
+			myModel[i].setVisible(v);
 	}
 	
 	public void setColor(float r, float g, float b, float a){
-		myModel.setColor(r,g,b,a);
+		for (int i = 0; i < myModel.length; i++)
+			myModel[i].setColor(r,g,b,a);
 	}
 	
-	public RenderModel getModel(){
-		return myModel;
+	public RenderModel getModel(int i){
+		return myModel[i];
 	}
 	
 	@Override
@@ -144,15 +150,33 @@ public abstract class GameObject extends GriddedObject{
 		needUpdate = true;
 	}
 	
+	public int getModelAmount(){
+		return myModel.length;
+	}
+	
 	public void updateModel(){
 		if (!needUpdate)
 			return;
-		myModel.setX(getX());
-		myModel.setY(getY());
-		myModel.setZ(getZ());
-		myModel.setWidth(getWidth());
-		myModel.setLength(getLength());
-		myModel.remakeModelMatrix();
+		for (int i = 0; i < myModel.length; i++){
+			myModel[i].setX(getX());
+			myModel[i].setY(getY());
+			myModel[i].setZ(getZ());
+			myModel[i].setWidth(getWidth());
+			myModel[i].setLength(getLength());
+			myModel[i].remakeModelMatrix();
+		}
+		needUpdate = false;
+	}
+	
+	public void updateModel(int i){
+		if (!needUpdate)
+			return;
+		myModel[i].setX(getX());
+		myModel[i].setY(getY());
+		myModel[i].setZ(getZ());
+		myModel[i].setWidth(getWidth());
+		myModel[i].setLength(getLength());
+		myModel[i].remakeModelMatrix();
 		needUpdate = false;
 	}
 	
@@ -174,8 +198,10 @@ public abstract class GameObject extends GriddedObject{
 	
 	//Recommended override and super call
 	public void draw(float[] vpMatrix){
-		if (init)
-			myModel.draw(vpMatrix);
+		if (init){
+			for (int i = 0; i < myModel.length; i++)
+				myModel[i].draw(vpMatrix);
+		}
 		else
 			init();
 	}
