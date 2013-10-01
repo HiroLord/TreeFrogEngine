@@ -7,7 +7,7 @@ public class MovingObject extends GameObject{
 	private float dx, dy, dz;
 	
 	private float speed;
-	private float speedMult;
+	private float speedMultX, speedMultY;
 	private float dir;
 	
 	private float acceleration = .005f;
@@ -19,7 +19,8 @@ public class MovingObject extends GameObject{
 		dx = dy = dz = 0f;
 		autoMove = false;
 		speed = 0f;
-		speedMult = 1f;
+		speedMultX = 1f;
+		speedMultY = 1f;
 		dir = 0f;
 	}
 	
@@ -144,12 +145,20 @@ public class MovingObject extends GameObject{
 		return speed;
 	}
 	
-	public void setSpeedMult(float speedMult){
-		this.speedMult = speedMult;
+	public void setSpeedMultX(float speedMult){
+		this.speedMultX = speedMult;
 	}
 	
-	public float getSpeedMult(){
-		return speedMult;
+	public void setSpeedMultY(float speedMult){
+		this.speedMultY = speedMult;
+	}
+	
+	public float getSpeedMultX(){
+		return speedMultX;
+	}
+	
+	public float getSpeedMultY(){
+		return speedMultY;
 	}
 	
 	public void setDir(float dir){
@@ -176,8 +185,8 @@ public class MovingObject extends GameObject{
 			setdy(0);
 		}
 		else {
-			dx = Directional.lengthDirX(dir, speed*speedMult*deltaTime);
-			dy = Directional.lengthDirY(dir, speed*speedMult*deltaTime);
+			dx = Directional.lengthDirX(dir, speed*speedMultX*deltaTime);
+			dy = Directional.lengthDirY(dir, speed*speedMultY*deltaTime);
 		}
 	}
 	

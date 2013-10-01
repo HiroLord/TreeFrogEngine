@@ -14,7 +14,7 @@ public abstract class NetworkGameController extends GameController{
 
 	public static Writer writer;
 	
-	public static final String hostname = "192.168.0.8";
+	public static final String hostname = "computer1forus.no-ip.org";
 	
 	public boolean initializeNetwork(){
 		writer = new Writer();
@@ -23,7 +23,8 @@ public abstract class NetworkGameController extends GameController{
 	
 	public boolean connect(){
 		if (writer == null){
-			initializeNetwork();
+			if (!initializeNetwork())
+				return false;
 		}
         int port = 7497;
         try {
@@ -33,7 +34,7 @@ public abstract class NetworkGameController extends GameController{
 	        socket.setTcpNoDelay(true);
             System.out.println("TCP No Delay: "+socket.getTcpNoDelay());
             writer.setStreams(new BufferedOutputStream(socket.getOutputStream()),
-            				 new BufferedInputStream(socket.getInputStream()));
+            				  new BufferedInputStream(socket.getInputStream()));
             return true;
         } catch (UnknownHostException e) {
             System.err.println("Unknown host: "+hostname);
@@ -55,6 +56,13 @@ public abstract class NetworkGameController extends GameController{
 			System.err.println("Connection lost.");
 			System.exit(1);
 		}
+	}
+	
+	@Override
+	public void update(float deltaTime){
+		if (writer != null)
+			listen();
+		super.update(deltaTime);
 	}
 	
 	// Implement this method if you want to do networking.

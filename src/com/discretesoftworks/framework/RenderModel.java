@@ -95,6 +95,7 @@ public class RenderModel extends GriddedObject{
     
     //float translation[] = {0, 0, 0};
     float scale[] = {1, 1, 1};
+    float autoScale[] = {1, 1, 1};
     
     private Sprite myTextureSprite;
     private float imageSingle;
@@ -187,6 +188,7 @@ public class RenderModel extends GriddedObject{
     public void remakeModelMatrix(){
     	Matrix.setIdentityM(mModelMatrix, 0);
     	Matrix.scaleM(mModelMatrix, 0, scale[0], scale[1], scale[2]);
+    	Matrix.scaleM(mModelMatrix, 0, autoScale[0], autoScale[1], autoScale[2]);
     	Matrix.translateM(mModelMatrix, 0, getX(), getY(), getZ());
     	Matrix.rotateM(mModelMatrix, 0, dir, 0.0f, 0.0f, 1.0f);
     }
@@ -298,13 +300,17 @@ public class RenderModel extends GriddedObject{
     public void setHudElement(boolean h){
     	this.hudElement = h;
     	if (h)
-    		setScaleX(9f/16f);
+    		setAutoScaleX(1/GameRenderer.s_instance.getRatio());
     	else
-    		setScaleX(1f);
+    		setAutoScaleX(1f);
     }
     
     public void setScaleX(float sx){
     	scale[0] = sx;
+    }
+    
+    public void setAutoScaleX(float sx){
+    	autoScale[0] = sx;
     }
     
     public boolean getHudElement(){

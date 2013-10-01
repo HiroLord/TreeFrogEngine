@@ -47,12 +47,18 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
 	
 	private final float scale;
 	
+	private float ratio;
+	
 	public MyGLRenderer(AndroidGame game, final float scale){
 		s_instance = this;
 		context = (Context)game;
 		setGame(game);
 		surfaceCreated = false;
 		this.scale = scale;
+	}
+	
+	public float getRatio(){
+		return ratio;
 	}
 	
 	@Override
@@ -122,13 +128,6 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
 		surfaceCreated = s;
 	}
 	
-//	public RenderModel getNewModel(float x, float y, float width, float height, Sprite sprite){
-//		RenderModel model = modelPool.newObject();
-//		model.resetColor();
-//		model.set(x,y,width,height,sprite);
-//		return model;
-//	}
-	
 	public RenderModel getNewModel(float x, float y, float width, float height, String filename){
 		RenderModel model = modelPool.newObject();
 		model.resetColor();
@@ -188,6 +187,10 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
         workFrameRate(deltaTime);
     }
     
+    public float[] getVPMatrix(){
+    	return mVPMatrix;
+    }
+    
     private void workFrameRate(float deltaTime){
 		frame += 1;
 		if (System.currentTimeMillis()-startFPSTime > 1000){
@@ -207,11 +210,11 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
         setScreenWidth(w);
         setScreenHeight(h);
         
-        float ratio = (float) w / h;
+        ratio = (float) w / h;
 
 //		Matrix.frustumM(mProjMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
 //		Matrix.orthoM(mProjMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
-		Matrix.perspectiveM(mProjMatrix, 0, 69.0f, ratio, 1, 99);
+		Matrix.perspectiveM(mProjMatrix, 0, 69.0f, ratio, 1f, 99f);
     }
     
     public static int loadShader(int type, String shaderCode){
@@ -251,21 +254,18 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
     	return loadTexture(context, bitmap);
     }
     
-    public static int loadTexture(final Context context, Bitmap bitmap)
-    {
+    public static int loadTexture(final Context context, Bitmap bitmap) {
         final int[] textureHandle = new int[1];
      
         GLES20.glGenTextures(1, textureHandle, 0);
      
-        if (textureHandle[0] != 0)
-        {
-     
+        if (textureHandle[0] != 0) {
             // Bind to the texture in OpenGL
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]);
      
             // Set filtering
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
      
             // Load the bitmap into the bound texture.
             GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
@@ -274,8 +274,7 @@ public class MyGLRenderer extends GameRenderer implements GLSurfaceView.Renderer
             bitmap.recycle();
         }
      
-        if (textureHandle[0] == 0)
-        {
+        if (textureHandle[0] == 0) {
             throw new RuntimeException("Error loading texture.");
         }
      
