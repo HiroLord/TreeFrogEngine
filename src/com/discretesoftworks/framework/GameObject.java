@@ -15,6 +15,8 @@ public abstract class GameObject extends GriddedObject{
 	
 	private boolean init;
 	
+	private float dir;
+	
 	private boolean needUpdate = true;
 	
 	public GameObject(float x, float y, float z, float width, float length, String[] objectNames){
@@ -25,6 +27,7 @@ public abstract class GameObject extends GriddedObject{
 			this.objectNames = new String[1];
 			this.objectNames[0] = null;
 		}
+		dir = 0;
 		myModel = new RenderModel[this.objectNames.length];
 		depthChanged = false;
 		init = false;
@@ -41,12 +44,13 @@ public abstract class GameObject extends GriddedObject{
 	}
 	
 	public void setDir(float dir){
+		this.dir = dir;
 		for (int i = 0; i < myModel.length; i++)
-			myModel[i].setNewDir(dir);
+			myModel[i].setNewDir(2, dir);
 	}
 	
 	public float getDir(){
-		return myModel[0].getDir();
+		return dir;
 	}
 	
 	@Override

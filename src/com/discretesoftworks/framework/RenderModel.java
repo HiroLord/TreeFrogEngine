@@ -105,8 +105,8 @@ public class RenderModel extends GriddedObject{
     private boolean visible;
     private boolean set;
     
-    private float dir;
-    private float newDir;
+    private float[] dir;
+    private float[] newDir;
     private boolean spin;
     
     public RenderModel() {
@@ -122,7 +122,14 @@ public class RenderModel extends GriddedObject{
         
         set = false;
         spin = true;
-        newDir = dir = 0f;
+        newDir = new float[3];
+        dir = new float[3];
+        newDir[0] = 0f;
+        newDir[1] = 0f;
+        newDir[2] = 0f;
+        dir[0] = 0f;
+        dir[1] = 0f;
+        dir[2] = 0f;
         
         Matrix.setIdentityM(identityMatrix, 0);
     }
@@ -190,7 +197,9 @@ public class RenderModel extends GriddedObject{
     	Matrix.scaleM(mModelMatrix, 0, scale[0], scale[1], scale[2]);
     	Matrix.scaleM(mModelMatrix, 0, autoScale[0], autoScale[1], autoScale[2]);
     	Matrix.translateM(mModelMatrix, 0, getX(), getY(), getZ());
-    	Matrix.rotateM(mModelMatrix, 0, dir, 0.0f, 0.0f, 1.0f);
+    	Matrix.rotateM(mModelMatrix, 0, dir[0], 1.0f, 0.0f, 0.0f);
+    	Matrix.rotateM(mModelMatrix, 0, dir[1], 0.0f, 1.0f, 0.0f);
+    	Matrix.rotateM(mModelMatrix, 0, dir[2], 0.0f, 0.0f, 1.0f);
     }
     
     public void createSquare(float width, float height){
@@ -219,8 +228,10 @@ public class RenderModel extends GriddedObject{
         imageSpeed = 1f;
         //mTextureDataHandle = mySprite.getSprite(getImageSingle());
         setHudElement(false);
-        setDir(0);
-        setNewDir(0);
+        for (int i = 0; i < 3; i++){
+	        setDir(i, 0);
+	        setNewDir(i, 0);
+        }
         set = true;
         visible = true;
     }
@@ -233,17 +244,23 @@ public class RenderModel extends GriddedObject{
     	return spin;
     }
     
-    public void setDir(float dir){
-    	this.dir = dir;
+    public void setDir(int xyz, float dir){
+    	this.dir[xyz] = dir;
     	remakeModelMatrix();
     }
     
-    public float getDir(){
-    	return dir;
+    public void setFDir(int xyz, float dir){
+    	this.dir[xyz] = dir;
+    	setNewDir(xyz, dir);
+    	remakeModelMatrix();
     }
     
-    public void setNewDir(float newDir){
-    	this.newDir = newDir;
+    public float getDir(int xyz){
+    	return dir[xyz];
+    }
+    
+    public void setNewDir(int xyz, float newDir){
+    	this.newDir[xyz] = newDir;
     }
     
     public void free(){
@@ -351,18 +368,20 @@ public class RenderModel extends GriddedObject{
             mTextureDataHandle = myTextureSprite.getSprite(getImageSingle());
 	    	
             //remakeModelMatrix();
-            if (newDir != dir){
-	            if (Math.abs(newDir-dir) < 20)
-	            	setDir(newDir);
-	            else if ((newDir > dir && Math.abs(newDir-dir) < 180) || (newDir < dir && Math.abs(newDir-dir) > 180))
-	            	setDir(dir+10);
-	            else if ((newDir < dir && Math.abs(newDir-dir) < 180) || (newDir > dir && Math.abs(newDir-dir) > 180))
-	            	setDir(dir-10);
+            for (int i = 0; i < 3; i++){
+	            if (newDir[i] != dir[i]){
+		            if (Math.abs(newDir[i]-dir[i]) < 20)
+		            	setDir(i, newDir[i]);
+		            else if ((newDir[i] > dir[i] && Math.abs(newDir[i]-dir[i]) < 180) || (newDir[i] < dir[i] && Math.abs(newDir[i]-dir[i]) > 180))
+		            	setDir(i, dir[i]+10);
+		            else if ((newDir[i] < dir[i] && Math.abs(newDir[i]-dir[i]) < 180) || (newDir[i] > dir[i] && Math.abs(newDir[i]-dir[i]) > 180))
+		            	setDir(i, dir[i]-10);
+	            }
+		        if (dir[i] > 180)
+		          	dir[i] -= 360;
+		        else if (dir[i] < -180)
+		           	dir[i] += 360;
             }
-	        if (dir > 180)
-	          	dir -= 360;
-	        else if (dir < -180)
-	           	dir += 360;
 
 	        // Add program to OpenGL environment
 	        GLES20.glUseProgram(mProgram);

@@ -23,6 +23,7 @@ public class TextDisplay extends GameObject implements TextHolder{
 		displayText = new RenderModel[this.length];
 		for (int i = 0; i < this.length; i++){
 			displayText[i]  = GameRenderer.s_instance.getNewModel(getX(),getY(),1,1,null);
+			displayText[i].setZ(z);
 			displayText[i].setVisible(false);
 		}
 	}
@@ -111,6 +112,7 @@ public class TextDisplay extends GameObject implements TextHolder{
 				displayText[i].createSquare(w*scale, h*scale);
 				displayText[i].setLeft(x);
 				displayText[i].setTop(y);
+				displayText[i].setZ(getZ());
 				displayText[i].setVisible(true);
 				x += displayText[i].getSprite().getMaskWidth()*scale;
 			}
@@ -153,6 +155,12 @@ public class TextDisplay extends GameObject implements TextHolder{
 	@Override
 	public String getText(){
 		return text;
+	}
+	
+	public void setDir(int xyz, float dir){
+		for (int i = 0; i < text.length(); i++){
+			displayText[i].setDir(xyz,dir);
+		}
 	}
 	
 	public void setVisible(boolean visible){
