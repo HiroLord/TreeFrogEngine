@@ -35,7 +35,7 @@ public class RenderModel extends GriddedObject{
 
         "attribute vec4 vPosition;" +
         "void main() {" +
-        "  vec3 ambient = vec3(.2,.2,.2);"+
+        "  vec3 ambient = vec3(.4,.4,.4);"+
         "  vec4 worldPos = uMMatrix * vPosition;"+
         "  gl_Position = uVPMatrix * worldPos;" +
 		"  v_TexCoordinate = a_TexCoordinate;" +

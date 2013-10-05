@@ -159,7 +159,7 @@ public class TextDisplay extends GameObject implements TextHolder{
 	
 	public void setDir(int xyz, float dir){
 		for (int i = 0; i < text.length(); i++){
-			displayText[i].setDir(xyz,dir);
+			displayText[i].setFDir(xyz,dir);
 		}
 	}
 	
