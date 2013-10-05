@@ -35,13 +35,13 @@ public class RenderModel extends GriddedObject{
 
         "attribute vec4 vPosition;" +
         "void main() {" +
-        "  vec3 ambient = vec3(.4,.4,.4);"+
+        "  vec3 ambient = vec3(.6,.6,.6);"+
         "  vec4 worldPos = uMMatrix * vPosition;"+
         "  gl_Position = uVPMatrix * worldPos;" +
 		"  v_TexCoordinate = a_TexCoordinate;" +
 		"  vec4 normal = vec4(a_normal,0.0);"+
         "  float distance = length(lightPos-worldPos);"+
-        "  float dottedAngle = dot(normalize(lightPos-worldPos),normal);" +
+        "  float dottedAngle = max(dot(normalize(lightPos-worldPos),normal),0.0);" +
 		"  lightness = (lightColor * dottedAngle) * (1.0 / (1.0 + distance * distance));"+
         "  lightness = vec4(lightness.xyz + ambient,1.0);"+
         "}";
@@ -439,7 +439,7 @@ public class RenderModel extends GriddedObject{
 	        lightPosHandle = GLES20.glGetUniformLocation(mProgram, "lightPos");
 	        lightColorHandle = GLES20.glGetUniformLocation(mProgram, "lightColor");
 	        GLES20.glUniform4f(lightPosHandle, 50.0f, 50.0f, 500.0f, 1.0f);
-	        GLES20.glUniform4f(lightColorHandle, 300000.0f, 300000.0f, 300000.0f, 1.0f);
+	        GLES20.glUniform4f(lightColorHandle, 200000.0f, 200000.0f, 200000.0f, 1.0f);
 	
 	        // get handle to shape's transformation matrixs
 	        mMMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMMatrix");
