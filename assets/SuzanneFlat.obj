@@ -1,6 +1,6 @@
 # Blender v2.67 (sub 1) OBJ File: 'Monkey.blend'
 # www.blender.org
-mtllib Suzanne.mtl
+mtllib SuzanneFlat.mtl
 o Suzanne
 v 0.439453 1.146827 0.758789
 v -0.439453 1.146827 0.758789
