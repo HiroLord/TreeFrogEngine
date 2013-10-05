@@ -21,6 +21,7 @@ public class RenderModel extends GriddedObject{
 	
 	
     private final String vertexShaderCode =
+    	"attribute vec3 a_normal;" +
     	"attribute vec2 a_TexCoordinate;" +
     	"varying vec2 v_TexCoordinate;" +
     	"varying vec4 lightness;" +
@@ -34,14 +35,15 @@ public class RenderModel extends GriddedObject{
 
         "attribute vec4 vPosition;" +
         "void main() {" +
+        "  vec3 ambient = vec3(.2,.2,.2);"+
         "  vec4 worldPos = uMMatrix * vPosition;"+
         "  gl_Position = uVPMatrix * worldPos;" +
 		"  v_TexCoordinate = a_TexCoordinate;" +
-		"  vec4 normal = vec4(0.0,0.0,1.0,0.0);"+
+		"  vec4 normal = vec4(a_normal,0.0);"+
         "  float distance = length(lightPos-worldPos);"+
         "  float dottedAngle = dot(normalize(lightPos-worldPos),normal);" +
 		"  lightness = (lightColor * dottedAngle) * (1.0 / (1.0 + distance * distance));"+
-        "  lightness = vec4(lightness.xyz,1.0);"+
+        "  lightness = vec4(lightness.xyz + ambient,1.0);"+
         "}";
 
     private final String fragmentShaderCode =
@@ -60,6 +62,7 @@ public class RenderModel extends GriddedObject{
     private ShortBuffer drawListBuffer;
     private int mProgram;
     private int mPositionHandle;
+    private int mNormalHandle;
     private int mColorHandle;
     private int mMMatrixHandle;
     private int mVPMatrixHandle;
@@ -67,7 +70,6 @@ public class RenderModel extends GriddedObject{
     private int lightColorHandle;
 
     // number of coordinates per vertex in this array
-
     static final int COORDS_PER_VERTEX = 3;
     //private PointF topLeft = new PointF(0,0);
     private float[] mModelMatrix = new float[16];
@@ -403,6 +405,12 @@ public class RenderModel extends GriddedObject{
 	        // Set color for drawing the triangle
 	        GLES20.glUniform4fv(mColorHandle, 1, color, 0);
 	        
+	        //Normals
+	        mNormalHandle = GLES20.glGetAttribLocation(mProgram, "a_normal");
+	        normalBuffer.position(0);
+	        GLES20.glVertexAttribPointer(mNormalHandle, COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, 0, normalBuffer);
+	        GLES20.glEnableVertexAttribArray(mNormalHandle);
+	        
 	        /* */
 	        //Set Texture Handles and bind Texture
 	        mTextureUniformHandle = GLES20.glGetAttribLocation(mProgram, "u_Texture");
@@ -454,6 +462,8 @@ public class RenderModel extends GriddedObject{
 	        
 	        // Disable vertex array
 	        GLES20.glDisableVertexAttribArray(mPositionHandle);
+	        GLES20.glDisableVertexAttribArray(mNormalHandle);
+	        GLES20.glDisableVertexAttribArray(mTextureCoordinateHandle);
     	}
     }
     
